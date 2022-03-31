@@ -1,0 +1,418 @@
+title: "Final Project - Hydro Power Generation and Streamflow Analysis"
+author: "Kaitlyn Elliott and Jon Nichols"
+output: pdf_document
+geometry: margin=2.54cm
+editor_options: 
+  chunk_output_type: console
+---
+## Background and Methods
+In this project we set out to explore the relationship between hydro power generation and stream generation. To do this we looked at power generation data from the EPI and stream gage data from the USGS. For generation data we selected generation sites/dams so that half were from the western United States and half from the East. Stream gage data was selected upstream from dams and reservoirs to get an accurate representation of stream flow over time. Both power generation data and stream flow was analyzed for seasonality and monotonic trends using a seasonal man kendall test. This was to help understand if generation was increasing or decreasing as a result of stream flow. Although outside factors could also contribute increases or decreases in power generation.
+
+## Set Up  
+
+```{r}
+
+getwd()
+
+library(tidyverse)
+library(lubridate)
+library(dataRetrieval)
+library(trend)
+library(dataRetrieval)
+library(cowplot)
+library(readr)
+
+theme_set(theme_classic())
+
+```
+
+## Data Processing 
+
+```{r}
+#Reading in stream data
+
+#East Stream Gage Sites
+
+gage_02143000<-readNWISdata(siteNumbers = "02143000", parameterCd = "00060", startDate = "2000-01-01", endDate = "2021-12-31")
+
+gage_02071000<-readNWISdata(siteNumbers = "02071000", parameterCd = "00060", startDate = "2000-01-01", endDate = "2021-12-31")
+
+gage_01563200<-readNWISdata(siteNumbers = "01563200", parameterCd = "00060", startDate = "2000-01-01", endDate = "2021-12-31")
+
+gage_01054500<-readNWISdata(siteNumbers = "01054500", parameterCd = "00060", startDate = "2000-01-01", endDate = "2021-12-31")
+
+gage_02163001<-readNWISdata(siteNumbers = "02163001", parameterCd = "00060", startDate = "2000-01-01", endDate = "2021-12-31")
+
+#West Stream Gage Sites
+
+gage_06279940<-readNWISdata(siteNumbers = "06279940", parameterCd = "00060", startDate = "2000-01-01", endDate = "2021-12-31")
+
+gage_13046000<-readNWISdata(siteNumbers = "13046000", parameterCd = "00060", startDate = "2000-01-01", endDate = "2021-12-31")
+
+gage_09146200<-readNWISdata(siteNumbers = "09146200", parameterCd = "00060", startDate = "2000-01-01", endDate = "2021-12-31")
+
+gage_09328990<-readNWISdata(siteNumbers = "09328990", parameterCd = "00060", startDate = "2000-01-01", endDate = "2021-12-31") # this one is broken
+
+gage_09408135<-readNWISdata(siteNumbers = "09408135", parameterCd = "00060", startDate = "2000-01-01", endDate = "2021-12-31")
+
+#Summarizing Data by Month
+
+gage_01054500 <- gage_01054500 %>%
+  mutate(Discharge = X_00060_00003) %>%
+  select(Discharge, dateTime, site_no) %>%
+  mutate(Month = month(dateTime), Year= year(dateTime)) %>%
+  group_by(Year, Month) %>%
+  summarize(average_monthly_discharge = mean(Discharge)) %>%
+  mutate(day="01",date=as.Date(paste(Month, day, Year, sep = "-"),
+                               format="%m-%d-%Y"))
+
+gage_01563200<-gage_01563200 %>%
+  mutate(Discharge = X_00060_00003) %>%
+  select(Discharge, dateTime, site_no) %>%
+  mutate(Month = month(dateTime), Year= year(dateTime)) %>%
+  group_by(Year, Month) %>%
+  summarize(average_monthly_discharge = mean(Discharge)) %>%
+  mutate(day="01",date=as.Date(paste(Month, day, Year, sep = "-"),
+                               format="%m-%d-%Y"))
+
+gage_02071000<-gage_02071000 %>%
+  mutate(Discharge = X_00060_00003) %>%
+  select(Discharge, dateTime, site_no) %>%
+  mutate(Month = month(dateTime), Year= year(dateTime)) %>%
+  group_by(Year, Month) %>%
+  summarize(average_monthly_discharge = mean(Discharge)) %>%
+  mutate(day="01",date=as.Date(paste(Month, day, Year, sep = "-"),
+                               format="%m-%d-%Y"))
+
+gage_02143000<-gage_02143000 %>%
+  mutate(Discharge = X_00060_00003) %>%
+  select(Discharge, dateTime, site_no) %>%
+  mutate(Month = month(dateTime), Year= year(dateTime)) %>%
+  group_by(Year, Month) %>%
+  summarize(average_monthly_discharge = mean(Discharge)) %>%
+  mutate(day="01",date=as.Date(paste(Month, day, Year, sep = "-"),
+                               format="%m-%d-%Y"))
+
+gage_02163001<-gage_02163001 %>%
+  mutate(Discharge = X_00060_00003) %>%
+  select(Discharge, dateTime, site_no) %>%
+  mutate(Month = month(dateTime), Year= year(dateTime)) %>%
+  group_by(Year, Month) %>%
+  summarize(average_monthly_discharge = mean(Discharge)) %>%
+  mutate(day="01",date=as.Date(paste(Month, day, Year, sep = "-"),
+                               format="%m-%d-%Y"))
+
+gage_06279940<-gage_06279940 %>%
+  mutate(Discharge = X_00060_00003) %>%
+  select(Discharge, dateTime, site_no) %>%
+  mutate(Month = month(dateTime), Year= year(dateTime)) %>%
+  group_by(Year, Month) %>%
+  summarize(average_monthly_discharge = mean(Discharge)) %>%
+  mutate(day="01",date=as.Date(paste(Month, day, Year, sep = "-"),
+                               format="%m-%d-%Y"))
+
+gage_09146200<-gage_09146200 %>%
+  mutate(Discharge = X_00060_00003) %>%
+  select(Discharge, dateTime, site_no) %>%
+  mutate(Month = month(dateTime), Year= year(dateTime)) %>%
+  group_by(Year, Month) %>%
+  summarize(average_monthly_discharge = mean(Discharge)) %>%
+  mutate(day="01",date=as.Date(paste(Month, day, Year, sep = "-"),
+                               format="%m-%d-%Y"))
+
+#gage_09328990<-gage_09328990 %>%
+  #mutate(Discharge = X_00060_00003) %>%
+  #select(Discharge, dateTime, site_no) %>%
+  #mutate(Month = month(dateTime), Year= year(dateTime)) %>%
+  #group_by(Year, Month) %>%
+  #summarize(average_monthly_discharge = mean(Discharge))
+
+gage_09408135<-gage_09408135 %>%
+  mutate(Discharge = X_00060_00003) %>%
+  select(Discharge, dateTime, site_no) %>%
+  mutate(Month = month(dateTime), Year= year(dateTime)) %>%
+  group_by(Year, Month) %>%
+  summarize(average_monthly_discharge = mean(Discharge)) %>%
+  mutate(day="01",date=as.Date(paste(Month, day, Year, sep = "-"),
+                               format="%m-%d-%Y"))
+
+gage_13046000<-gage_13046000 %>%
+  mutate(Discharge = X_00060_00003) %>%
+  select(Discharge, dateTime, site_no) %>%
+  mutate(Month = month(dateTime), Year= year(dateTime)) %>%
+  group_by(Year, Month) %>%
+  summarize(average_monthly_discharge = mean(Discharge)) %>%
+  mutate(day="01",date=as.Date(paste(Month, day, Year, sep = "-"),
+                               format="%m-%d-%Y"))
+#Reading in generation data
+High_Shoals_Generation <- read.csv("./Final Project Hydro Generation Data/High_Shoals_Hydro_(NC)_net_generation (1).csv")
+
+Schoolfield_Generation <- read.csv("./Final Project Hydro Generation Data/Schoolfield_Dam_net_generation.csv", )
+
+Matson_Generation <- read.csv("./Final Project Hydro Generation Data/William_F_Matson_Generating_Station_net_generation.csv", )
+
+Otis_Generation <- read.csv("./Final Project Hydro Generation Data/Otis_Hydro_net_generation.csv", )
+
+Ware_Shoals_Generation <- read.csv("./Final Project Hydro Generation Data/Ware_Shoals_Hydro_Project_net_generation.csv", )
+
+Garland_Generation <- read.csv("./Final Project Hydro Generation Data/Garland_Canal_Power_Plant_net_generation.csv",)
+
+Chester_Generation <- read.csv("./Final Project Hydro Generation Data/Chester_Diversion_Hydroelectric_Project_net_generation.csv", )
+
+Tri_County_Generation <- read.csv("./Final Project Hydro Generation Data/Tri-County_Water_Hydropower_Project_net_generation.csv",)
+
+Glen_Canyon_Generation <- read.csv("./Final Project Hydro Generation Data/Glen_Canyon_Dam_net_generation.csv", )
+
+Quail_Creek_Generation <- read.csv("./Final Project Hydro Generation Data/Quail_Creek_Hydro_Plant_#1_net_generation.csv", )
+High_Shoals_Generation <- High_Shoals_Generation[-c(1),]
+Schoolfield_Generation <- Schoolfield_Generation[-c(1),]
+Matson_Generation <- Matson_Generation[-c(1),]
+Otis_Generation <- Otis_Generation[-c(1),]
+Ware_Shoals_Generation <-Ware_Shoals_Generation[-c(1),] 
+Garland_Generation <- Garland_Generation[-c(1),]
+Chester_Generation <- Chester_Generation[-c(1),]
+Tri_County_Generation <- Tri_County_Generation[-c(1),]
+Glen_Canyon_Generation <- Glen_Canyon_Generation[-c(1),]
+Quail_Creek_Generation <- Quail_Creek_Generation[-c(1),]
+
+colnames(High_Shoals_Generation) <- c("date_wrong", "Power")
+colnames(Schoolfield_Generation) <- c("date_wrong", "Power")
+colnames(Matson_Generation) <- c("date_wrong", "Power")
+colnames(Otis_Generation) <- c("date_wrong", "Power")
+colnames(Ware_Shoals_Generation) <- c("date_wrong", "Power")
+colnames(Garland_Generation) <- c("date_wrong", "Power")
+colnames(Chester_Generation) <- c("date_wrong", "Power")
+colnames(Tri_County_Generation) <- c("date_wrong", "Power")
+colnames(Glen_Canyon_Generation) <- c("date_wrong", "Power")
+colnames(Quail_Creek_Generation) <- c("date_wrong", "Power")
+
+High_Shoals_Generation <- High_Shoals_Generation %>%
+  mutate(Date = as.Date(paste(date_wrong, "-01", sep=""), format = "%b-%y-%d"))
+Schoolfield_Generation <- Schoolfield_Generation%>%
+  mutate(Date = as.Date(paste(date_wrong, "-01", sep=""), format = "%b-%y-%d"))
+Matson_Generation <- Matson_Generation%>%
+  mutate(Date = as.Date(paste(date_wrong, "-01", sep=""), format = "%b-%y-%d"))
+Otis_Generation <- Otis_Generation%>%
+  mutate(Date = as.Date(paste(date_wrong, "-01", sep=""), format = "%b-%y-%d"))
+Ware_Shoals_Generation <-Ware_Shoals_Generation %>%
+  mutate(Date = as.Date(paste(date_wrong, "-01", sep=""), format = "%b-%y-%d"))
+Garland_Generation <- Garland_Generation%>%
+  mutate(Date = as.Date(paste(date_wrong, "-01", sep=""), format = "%b-%y-%d"))
+Chester_Generation <- Chester_Generation%>%
+  mutate(Date = as.Date(paste(date_wrong, "-01", sep=""), format = "%b-%y-%d"))
+Tri_County_Generation <- Tri_County_Generation%>%
+  mutate(Date = as.Date(paste(date_wrong, "-01", sep=""), format = "%b-%y-%d"))
+Glen_Canyon_Generation <- Glen_Canyon_Generation%>%
+  mutate(Date = as.Date(paste(date_wrong, "-01", sep=""), format = "%b-%y-%d"))
+Quail_Creek_Generation <- Quail_Creek_Generation%>%
+  mutate(Date = as.Date(paste(date_wrong, "-01", sep=""), format = "%b-%y-%d"))
+
+High_Shoals_Generation <- High_Shoals_Generation %>%
+  mutate(Month = month(Date))%>%
+mutate(Year = year(Date))%>%
+  select(Date, Month, Year, Power)
+
+Schoolfield_Generation <- Schoolfield_Generation%>%
+  mutate(Month = month(Date))%>%
+mutate(Year = year(Date))%>%
+  select(Date, Month, Year, Power)
+
+Matson_Generation <- Matson_Generation%>%
+  mutate(Month = month(Date))%>%
+mutate(Year = year(Date))%>%
+  select(Date, Month, Year, Power)
+
+Otis_Generation <- Otis_Generation%>%
+  mutate(Month = month(Date))%>%
+mutate(Year = year(Date))%>%
+  select(Date, Month, Year, Power)
+
+Ware_Shoals_Generation <-Ware_Shoals_Generation %>%
+  mutate(Month = month(Date))%>%
+mutate(Year = year(Date))%>%
+  select(Date, Month, Year, Power)
+
+Garland_Generation <- Garland_Generation%>%
+  mutate(Month = month(Date))%>%
+mutate(Year = year(Date))%>%
+  select(Date, Month, Year, Power)
+
+Chester_Generation <- Chester_Generation%>%
+  mutate(Month = month(Date))%>%
+mutate(Year = year(Date))%>%
+  select(Date, Month, Year, Power)
+
+Tri_County_Generation <- Tri_County_Generation%>%
+  mutate(Month = month(Date))%>%
+mutate(Year = year(Date))%>%
+  select(Date, Month, Year, Power)
+
+Glen_Canyon_Generation <- Glen_Canyon_Generation%>%
+  mutate(Month = month(Date))%>%
+mutate(Year = year(Date))%>%
+  select(Date, Month, Year, Power)
+
+Quail_Creek_Generation <- Quail_Creek_Generation%>%
+  mutate(Month = month(Date))%>%
+mutate(Year = year(Date))%>%
+  select(Date, Month, Year, Power)
+
+
+
+High_Shoals_Generation_Complete <-  High_Shoals_Generation[!(is.na(High_Shoals_Generation$Power) | High_Shoals_Generation$Power==""), ]
+
+Schoolfield_Generation_Complete <-  Schoolfield_Generation[!(is.na(Schoolfield_Generation$Power) | Schoolfield_Generation$Power==""), ]
+
+Matson_Generation_Complete <-  Matson_Generation[!(is.na(Matson_Generation$Power) | Matson_Generation$Power==""), ]
+
+Otis_Generation_Complete <-  Otis_Generation[!(is.na(Otis_Generation$Power) | Otis_Generation$Power==""), ]
+
+Ware_Shoals_Generation_Complete <-  Ware_Shoals_Generation[!(is.na(Ware_Shoals_Generation$Power) | Ware_Shoals_Generation$Power==""), ]
+
+Garland_Generation_Complete <-  Garland_Generation[!(is.na(Garland_Generation$Power) | Garland_Generation$Power==""), ]
+
+Chester_Generation_Complete <-  Chester_Generation[!(is.na(Chester_Generation$Power) | Chester_Generation$Power==""), ]
+
+Tri_County_Generation_Complete <-  Tri_County_Generation[!(is.na(Tri_County_Generation$Power) | Tri_County_Generation$Power==""), ]
+
+Glen_Canyon_Generation_Complete <-  Glen_Canyon_Generation[!(is.na(Glen_Canyon_Generation$Power) | Glen_Canyon_Generation$Power==""), ]
+
+Quail_Creek_Generation_Complete <-  Quail_Creek_Generation[!(is.na(Quail_Creek_Generation$Power) | Quail_Creek_Generation$Power==""), ]
+
+```
+
+## Discharge Visualization
+
+```{r}
+
+plot1<-ggplot(gage_01054500, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Gage 01054500")+ylim(0,15000)
+plot2<-ggplot(gage_01563200, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Gage 01563200")+ylim(0,15000)
+plot3<-ggplot(gage_02071000, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Gage 02071000")+ylim(0,15000)
+plot4<-ggplot(gage_02143000, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="Average Monthly Discharge", title = "Gage 02143000")+ylim(0,15000)
+plot5<-ggplot(gage_02163001, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Gage 02163001")+ylim(0,15000)
+plot6<-ggplot(gage_06279940, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs(x="", y="", title = "Gage 06279940")+ylim(0,15000)
+plot7<-ggplot(gage_09146200, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs(x="", y="", title = "Gage 09146200")+ylim(0,15000)
+#plot8<-ggplot(gage_09328990, aes(x=date, y=average_monthly_discharge))+geom_line()
+plot9<-ggplot(gage_09408135, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs( x="", y="", title = "Gage 09408135")+ylim(0,15000)+scale_x_date(limits=as.Date(c("2000-01-01", "2021-12-31")))
+plot10<-ggplot(gage_13046000, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs(x="", y="", title = "Gage 13046000")+ylim(0,15000)
+
+discharge_plot<-plot_grid(plot1, plot2, plot3, plot4, plot5, plot6, plot7, plot9, plot10, ncol = 3, align="hv")
+
+title_gg <- ggplot() + labs(title = "Discharge Measurements for Streams Associated with Hydropower Generation", subtitle = "Blue indicates eastern states while red indicates western states.")
+
+plot_grid(title_gg, discharge_plot, ncol = 1, rel_heights = c(0.08,1))
+
+```
+
+## Data Analysis
+
+Testing for trends in discharge and generation data.
+
+```{r}
+gage_01054500_ts<-ts(gage_01054500[[3]], frequency = 12,  start = c(2000, 1), end = c(2021, 12))
+decom_01054500<-stl(gage_01054500_ts, s.window = "periodic")
+plot(decom_01054500)
+trend_gage_01054500<-smk.test(gage_01054500_ts)
+trend_gage_01054500
+summary(trend_gage_01054500)
+
+
+gage_01563200_ts<-ts(gage_01563200[[3]], frequency = 12,  start = c(2000, 1), end = c(2021, 12))
+decom_01563200<- stl(gage_01563200_ts, s.window = "periodic")
+plot(decom_01563200)
+trend_gage_01563200<-smk.test(gage_01563200_ts)
+trend_gage_01563200
+summary(trend_gage_01563200)
+
+
+gage_02071000_ts<-ts(gage_02071000[[3]], frequency = 12,  start = c(2000, 1), end = c(2021, 12))
+decom_02071000<- stl(gage_02071000_ts, s.window = "periodic")
+plot(decom_02071000)
+trend_gage_02071000<-smk.test(gage_02071000_ts)
+trend_gage_02071000
+summary(trend_gage_02071000)
+
+
+gage_02143000_ts<-ts(gage_02143000[[3]], frequency = 12,  start = c(2000, 1), end = c(2021, 12))
+decom_02143000<- stl(gage_02143000_ts, s.window = "periodic")
+plot(decom_02143000)
+trend_gage_02143000<-smk.test(gage_02143000_ts)
+trend_gage_02143000
+summary(trend_gage_02143000)
+
+
+
+gage_02163001_ts<-ts(gage_02163001[[3]], frequency = 12,  start = c(2000, 1), end = c(2021, 12))
+decom_02163001<- stl(gage_02163001_ts, s.window = "periodic")
+plot(decom_02163001)
+trend_gage_02163001<-smk.test(gage_02163001_ts)
+trend_gage_02163001
+summary(trend_gage_02163001)
+
+
+
+gage_06279940_ts<-ts(gage_06279940[[3]], frequency = 12,  start = c(2000, 1), end = c(2021, 12))
+decom_06279940<- stl(gage_06279940_ts, s.window = "periodic")
+plot(decom_06279940)
+trend_gage_06279940<-smk.test(gage_06279940_ts)
+trend_gage_06279940
+summary(trend_gage_06279940)
+
+
+
+gage_09146200_ts<-ts(gage_09146200[[3]], frequency = 12,  start = c(2000, 1), end = c(2021, 12))
+decom_09146200<- stl(gage_09146200_ts, s.window = "periodic")
+plot(decom_09146200)
+trend_gage_09146200<-smk.test(gage_09146200_ts)
+trend_gage_09146200
+summary(trend_gage_09146200)
+
+#gage_09328990_ts<-ts(gage_09328990[[3]], frequency = 12,  start = c(2000, 1), end = c(2021, 12))
+#decom_09328990<- stl(gage_09328990_ts, s.window = "periodic")
+#plot(decom_09328990)
+
+
+gage_09408135_ts<-ts(gage_09408135[[3]], frequency = 12,  start = c(2005, 1), end = c(2021, 12))
+decom_09408135<- stl(gage_09408135_ts, s.window = "periodic")
+plot(decom_09408135)
+trend_gage_09408135<-smk.test(gage_09408135_ts)
+trend_gage_09408135
+summary(trend_gage_09408135)
+
+
+gage_13046000_ts<-ts(gage_13046000[[3]], frequency = 12,  start = c(2000, 1), end = c(2021, 12))
+decom_13046000<- stl(gage_13046000_ts, s.window = "periodic")
+plot(decom_13046000)
+trend_gage_13046000<-smk.test(gage_13046000_ts)
+trend_gage_13046000
+summary(trend_gage_13046000)
+
+
+```
+
+## Combining Datasets 
+
+```{r}
+#Matching the stream gage data to the power generation data.
+
+#High Shoals Dam
+high_shoals_power_water<-left_join(High_Shoals_Generation_Complete, gage_02143000)%>%
+  mutate(Power=as.numeric(Power))
+
+ggplot(high_shoals_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point()+scale_y_log10()+geom_smooth()
+
+
+schoolfield_power_water<-left_join(Schoolfield_Generation_Complete, gage_02071000)%>%
+  mutate(Power=as.numeric(Power))
+
+ggplot(schoolfield_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point()
+
+
+garland_power_water<-left_join(Garland_Generation_Complete, gage_06279940)%>%
+  mutate(Power=as.numeric(Power))
+
+ggplot(garland_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point()
+
+```
+
+## Results 
