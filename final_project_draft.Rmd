@@ -21,6 +21,9 @@ library(trend)
 library(dataRetrieval)
 library(cowplot)
 library(readr)
+library(zoo)
+library(Kendall)
+library(tseries)
 
 theme_set(theme_classic())
 
@@ -147,23 +150,25 @@ gage_13046000<-gage_13046000 %>%
 #Reading in generation data
 High_Shoals_Generation <- read.csv("./Final Project Hydro Generation Data/High_Shoals_Hydro_(NC)_net_generation (1).csv")
 
-Schoolfield_Generation <- read.csv("./Final Project Hydro Generation Data/Schoolfield_Dam_net_generation.csv", )
+Schoolfield_Generation <- read.csv("./Final Project Hydro Generation Data/Schoolfield_Dam_net_generation.csv")
 
-Matson_Generation <- read.csv("./Final Project Hydro Generation Data/William_F_Matson_Generating_Station_net_generation.csv", )
+Matson_Generation <- read.csv("./Final Project Hydro Generation Data/William_F_Matson_Generating_Station_net_generation.csv")
 
-Otis_Generation <- read.csv("./Final Project Hydro Generation Data/Otis_Hydro_net_generation.csv", )
+Otis_Generation <- read.csv("./Final Project Hydro Generation Data/Otis_Hydro_net_generation.csv")
 
-Ware_Shoals_Generation <- read.csv("./Final Project Hydro Generation Data/Ware_Shoals_Hydro_Project_net_generation.csv", )
+Ware_Shoals_Generation <- read.csv("./Final Project Hydro Generation Data/Ware_Shoals_Hydro_Project_net_generation.csv")
 
-Garland_Generation <- read.csv("./Final Project Hydro Generation Data/Garland_Canal_Power_Plant_net_generation.csv",)
+Garland_Generation <- read.csv("./Final Project Hydro Generation Data/Garland_Canal_Power_Plant_net_generation.csv")
 
-Chester_Generation <- read.csv("./Final Project Hydro Generation Data/Chester_Diversion_Hydroelectric_Project_net_generation.csv", )
+Chester_Generation <- read.csv("./Final Project Hydro Generation Data/Chester_Diversion_Hydroelectric_Project_net_generation.csv")
 
-Tri_County_Generation <- read.csv("./Final Project Hydro Generation Data/Tri-County_Water_Hydropower_Project_net_generation.csv",)
+Tri_County_Generation <- read.csv("./Final Project Hydro Generation Data/Tri-County_Water_Hydropower_Project_net_generation.csv")
 
-Glen_Canyon_Generation <- read.csv("./Final Project Hydro Generation Data/Glen_Canyon_Dam_net_generation.csv", )
+Glen_Canyon_Generation <- read.csv("./Final Project Hydro Generation Data/Glen_Canyon_Dam_net_generation.csv")
 
-Quail_Creek_Generation <- read.csv("./Final Project Hydro Generation Data/Quail_Creek_Hydro_Plant_#1_net_generation.csv", )
+Quail_Creek_Generation <- read.csv("./Final Project Hydro Generation Data/Quail_Creek_Hydro_Plant_#1_net_generation.csv")
+
+
 High_Shoals_Generation <- High_Shoals_Generation[-c(1),]
 Schoolfield_Generation <- Schoolfield_Generation[-c(1),]
 Matson_Generation <- Matson_Generation[-c(1),]
@@ -210,52 +215,73 @@ Quail_Creek_Generation <- Quail_Creek_Generation%>%
 High_Shoals_Generation <- High_Shoals_Generation %>%
   mutate(Month = month(Date))%>%
 mutate(Year = year(Date))%>%
-  select(Date, Month, Year, Power)
+  select(Date, Month, Year, Power)%>%
+  transform(Power = as.numeric(Power))%>%
+  arrange(Date)
+  
 
 Schoolfield_Generation <- Schoolfield_Generation%>%
   mutate(Month = month(Date))%>%
 mutate(Year = year(Date))%>%
-  select(Date, Month, Year, Power)
+  select(Date, Month, Year, Power)%>%
+  transform(Power = as.numeric(Power))%>%
+  arrange(Date)
 
 Matson_Generation <- Matson_Generation%>%
   mutate(Month = month(Date))%>%
 mutate(Year = year(Date))%>%
-  select(Date, Month, Year, Power)
+  select(Date, Month, Year, Power)%>%
+  transform(Power = as.numeric(Power))%>%
+  arrange(Date)
 
 Otis_Generation <- Otis_Generation%>%
   mutate(Month = month(Date))%>%
 mutate(Year = year(Date))%>%
-  select(Date, Month, Year, Power)
+  select(Date, Month, Year, Power)%>%
+  transform(Power = as.numeric(Power))%>%
+  arrange(Date)
 
 Ware_Shoals_Generation <-Ware_Shoals_Generation %>%
   mutate(Month = month(Date))%>%
 mutate(Year = year(Date))%>%
-  select(Date, Month, Year, Power)
+  select(Date, Month, Year, Power)%>%
+  transform(Power = as.numeric(Power))%>%
+  arrange(Date)
 
 Garland_Generation <- Garland_Generation%>%
   mutate(Month = month(Date))%>%
 mutate(Year = year(Date))%>%
-  select(Date, Month, Year, Power)
+  select(Date, Month, Year, Power)%>%
+  transform(Power = as.numeric(Power))%>%
+  arrange(Date)
 
 Chester_Generation <- Chester_Generation%>%
   mutate(Month = month(Date))%>%
 mutate(Year = year(Date))%>%
-  select(Date, Month, Year, Power)
+  select(Date, Month, Year, Power)%>%
+  transform(Power = as.numeric(Power))%>%
+  arrange(Date)
 
 Tri_County_Generation <- Tri_County_Generation%>%
   mutate(Month = month(Date))%>%
 mutate(Year = year(Date))%>%
-  select(Date, Month, Year, Power)
+  select(Date, Month, Year, Power)%>%
+  transform(Power = as.numeric(Power))%>%
+  arrange(Date)
 
 Glen_Canyon_Generation <- Glen_Canyon_Generation%>%
   mutate(Month = month(Date))%>%
 mutate(Year = year(Date))%>%
-  select(Date, Month, Year, Power)
+  select(Date, Month, Year, Power)%>%
+  transform(Power = as.numeric(Power))%>%
+  arrange(Date)
 
 Quail_Creek_Generation <- Quail_Creek_Generation%>%
   mutate(Month = month(Date))%>%
 mutate(Year = year(Date))%>%
-  select(Date, Month, Year, Power)
+  select(Date, Month, Year, Power)%>%
+  transform(Power = as.numeric(Power))%>%
+  arrange(Date)
 
 
 
@@ -278,6 +304,7 @@ Tri_County_Generation_Complete <-  Tri_County_Generation[!(is.na(Tri_County_Gene
 Glen_Canyon_Generation_Complete <-  Glen_Canyon_Generation[!(is.na(Glen_Canyon_Generation$Power) | Glen_Canyon_Generation$Power==""), ]
 
 Quail_Creek_Generation_Complete <-  Quail_Creek_Generation[!(is.na(Quail_Creek_Generation$Power) | Quail_Creek_Generation$Power==""), ]
+
 
 ```
 
@@ -387,6 +414,339 @@ trend_gage_13046000<-smk.test(gage_13046000_ts)
 trend_gage_13046000
 summary(trend_gage_13046000)
 
+
+```
+
+```{r}
+f_month_1<- month(first(High_Shoals_Generation_Complete$Date))
+f_year_1<- year(first((High_Shoals_Generation_Complete$Date)))
+high_shoals_ts<- ts(High_Shoals_Generation_Complete$Power,
+                   start=c(f_year_1,f_month_1),
+                   frequency=12)
+
+f_month_2<- month(first(Schoolfield_Generation_Complete$Date))
+f_year_2<- year(first((Schoolfield_Generation_Complete$Date)))
+schoolfield_ts<- ts(Schoolfield_Generation_Complete$Power,
+                   start=c(f_year_2,f_month_2),
+                   frequency=12)
+
+f_month_3<- month(first(Matson_Generation_Complete$Date))
+f_year_3<- year(first((Matson_Generation_Complete$Date)))
+matson_ts<- ts(Matson_Generation_Complete$Power,
+                   start=c(f_year_3,f_month_3),
+                   frequency=12)
+
+f_month_4<- month(first(Otis_Generation_Complete$Date))
+f_year_4<- year(first((Otis_Generation_Complete$Date)))
+otis_ts<- ts(Otis_Generation_Complete$Power,
+                   start=c(f_year_4,f_month_4),
+                   frequency=12)
+
+f_month_5<- month(first(Ware_Shoals_Generation_Complete$Date))
+f_year_5<- year(first((Ware_Shoals_Generation_Complete$Date)))
+ware_shoals_ts<- ts(Ware_Shoals_Generation_Complete$Power,
+                   start=c(f_year_5,f_month_5),
+                   frequency=12)
+
+f_month_6<- month(first(Garland_Generation_Complete$Date))
+f_year_6<- year(first((Garland_Generation_Complete$Date)))
+garland_ts<- ts(Garland_Generation_Complete$Power,
+                   start=c(f_year_6,f_month_6),
+                   frequency=12)
+
+f_month_7<- month(first(Chester_Generation_Complete$Date))
+f_year_7<- year(first((Chester_Generation_Complete$Date)))
+chester_ts<- ts(Chester_Generation_Complete$Power,
+                   start=c(f_year_7,f_month_7),
+                   frequency=12)
+
+
+f_month_8<- month(first(Tri_County_Generation_Complete$Date))
+f_year_8<- year(first((Tri_County_Generation_Complete$Date)))
+tri_county_ts<- ts(Tri_County_Generation_Complete$Power,
+                   start=c(f_year_8,f_month_8),
+                   frequency=12)
+
+f_month_9<- month(first(Glen_Canyon_Generation_Complete$Date))
+f_year_9<- year(first((Glen_Canyon_Generation_Complete$Date)))
+glen_canyon_ts<- ts(Glen_Canyon_Generation_Complete$Power,
+                   start=c(f_year_9,f_month_9),
+                   frequency=12)
+
+f_month_10<- month(first(Quail_Creek_Generation_Complete$Date))
+f_year_10<- year(first((Quail_Creek_Generation_Complete$Date)))
+quail_creek_ts<- ts(Quail_Creek_Generation_Complete$Power,
+                   start=c(f_year_10,f_month_10),
+                   frequency=12)
+
+High_Shoals_Generation_Decomposed <- stl(high_shoals_ts, s.window = "periodic")
+Schoolfield_Generation_Decomposed <- stl(schoolfield_ts, s.window = "periodic")
+Matson_Generation_Decomposed <- stl(matson_ts, s.window = "periodic")
+Otis_Generation_Decomposed <- stl(otis_ts, s.window = "periodic")
+Ware_Shoals_Generation_Decomposed <- stl(ware_shoals_ts, s.window = "periodic")
+Garland_Generation_Decomposed <- stl(garland_ts, s.window = "periodic")
+Chester_Generation_Decomposed <- stl(chester_ts, s.window = "periodic")
+Tri_County_Generation_Decomposed <- stl(tri_county_ts, s.window = "periodic")
+Glen_Canyon_Generation_Decomposed <- stl(glen_canyon_ts, s.window = "periodic")
+Quail_Creek_Generation_Decomposed <- stl(quail_creek_ts, s.window = "periodic")
+
+High_Shoals_Generation_Components <-as.data.frame(High_Shoals_Generation_Decomposed$time.series[,1:3])
+Schoolfield_Generation_Components <- as.data.frame(Schoolfield_Generation_Decomposed$time.series[,1:3])
+Matson_Generation_Components <- as.data.frame(Matson_Generation_Decomposed$time.series[,1:3])
+Otis_Generation_Components <- as.data.frame(Otis_Generation_Decomposed$time.series[,1:3])
+Ware_Shoals_Generation_Components <- as.data.frame(Ware_Shoals_Generation_Decomposed$time.series[,1:3])
+Garland_Generation_Components <- as.data.frame(Garland_Generation_Decomposed$time.series[,1:3])
+Chester_Generation_Components <- as.data.frame(Chester_Generation_Decomposed$time.series[,1:3])
+Tri_County_Generation_Components <- as.data.frame(Tri_County_Generation_Decomposed$time.series[,1:3])
+Glen_Canyon_Generation_Components <- as.data.frame(Glen_Canyon_Generation_Decomposed$time.series[,1:3])
+Quail_Creek_Generation_Components <- as.data.frame(Quail_Creek_Generation_Decomposed$time.series[,1:3])
+
+High_Shoals_Generation_Components <- mutate(High_Shoals_Generation_Components,
+        Observed = High_Shoals_Generation_Complete$Power,     
+        Date = High_Shoals_Generation_Complete$Date)
+
+
+Schoolfield_Generation_Components <- mutate(Schoolfield_Generation_Components,
+        Observed = Schoolfield_Generation_Complete$Power,     
+        Date = Schoolfield_Generation_Complete$Date)
+
+
+Matson_Generation_Components <- mutate(Matson_Generation_Components,
+        Observed = Matson_Generation_Complete$Power,     
+        Date = Matson_Generation_Complete$Date)
+
+
+Otis_Generation_Components <- mutate(Otis_Generation_Components,
+        Observed = Otis_Generation_Complete$Power,     
+        Date = Otis_Generation_Complete$Date)
+
+
+Ware_Shoals_Generation_Components <- mutate(Ware_Shoals_Generation_Components,
+        Observed = Ware_Shoals_Generation_Complete$Power,     
+        Date = Ware_Shoals_Generation_Complete$Date)
+
+Garland_Generation_Components <- mutate(Garland_Generation_Components,
+        Observed = Garland_Generation_Complete$Power,     
+        Date = Garland_Generation_Complete$Date)
+
+
+Chester_Generation_Components <- mutate(Chester_Generation_Components,
+        Observed = Chester_Generation_Complete$Power,     
+        Date = Chester_Generation_Complete$Date)
+
+
+Tri_County_Generation_Components <- mutate(Tri_County_Generation_Components,
+        Observed = Tri_County_Generation_Complete$Power,     
+        Date = Tri_County_Generation_Complete$Date)
+
+
+Glen_Canyon_Generation_Components <- mutate(Glen_Canyon_Generation_Components,
+        Observed = Glen_Canyon_Generation_Complete$Power,     
+        Date = Glen_Canyon_Generation_Complete$Date)
+
+Quail_Creek_Generation_Components <- mutate(Quail_Creek_Generation_Components,
+        Observed = Quail_Creek_Generation_Complete$Power,     
+        Date = Quail_Creek_Generation_Complete$Date)
+
+# Run SMK test
+high_shoals_trend1 <- Kendall::SeasonalMannKendall(high_shoals_ts)
+# Inspect results
+high_shoals_trend1
+summary(high_shoals_trend1)
+
+# Run SMK test
+schoolfield_trend1 <- Kendall::SeasonalMannKendall(schoolfield_ts)
+# Inspect results
+schoolfield_trend1
+summary(schoolfield_trend1)
+
+# Run SMK test
+matson_trend1 <- Kendall::SeasonalMannKendall(matson_ts)
+# Inspect results
+matson_trend1
+summary(matson_trend1)
+
+# Run SMK test
+otis_trend1 <- Kendall::SeasonalMannKendall(otis_ts)
+# Inspect results
+otis_trend1
+summary(otis_trend1)
+
+# Run SMK test
+ware_shoals_trend1 <- Kendall::SeasonalMannKendall(ware_shoals_ts)
+# Inspect results
+ware_shoals_trend1
+summary(ware_shoals_trend1)
+
+
+# Run SMK test
+garland_trend1 <- Kendall::SeasonalMannKendall(garland_ts)
+# Inspect results
+garland_trend1
+summary(garland_trend1)
+
+
+# Run SMK test
+chester_trend1 <- Kendall::SeasonalMannKendall(chester_ts)
+# Inspect results
+chester_trend1
+summary(chester_trend1)
+
+
+# Run SMK test
+tri_county_trend1 <- Kendall::SeasonalMannKendall(tri_county_ts)
+# Inspect results
+tri_county_trend1
+summary(tri_county_trend1)
+
+# Run SMK test
+glen_canyon_trend1 <- Kendall::SeasonalMannKendall(glen_canyon_ts)
+# Inspect results
+glen_canyon_trend1
+summary(glen_canyon_trend1)
+
+
+# Run SMK test
+quail_creek_trend1 <- Kendall::SeasonalMannKendall(quail_creek_ts)
+# Inspect results
+quail_creek_trend1
+summary(quail_creek_trend1)
+
+
+```
+
+```{r}
+# Visualize how the trend maps onto the data
+
+ggplot(High_Shoals_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+
+ggplot(Schoolfield_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+ggplot(Matson_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+ggplot(Otis_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+
+ggplot(Ware_Shoals_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+ggplot(Garland_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+ggplot(Chester_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+ggplot(Tri_County_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+ggplot(Glen_Canyon_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+
+ggplot(Quail_Creek_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+# Visualize how the seasonal cycle maps onto the data
+ggplot(High_Shoals_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+
+ggplot(Schoolfield_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+ggplot(Matson_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+
+ggplot(Otis_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+ggplot(Ware_Shoals_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+
+ggplot(Garland_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+
+ggplot(Chester_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+
+ggplot(Tri_County_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+ggplot(Glen_Canyon_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
+
+
+ggplot(Quail_Creek_Generation_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab(expression("Power (MWh)"))
 
 ```
 
