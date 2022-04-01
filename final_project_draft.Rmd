@@ -756,22 +756,64 @@ ggplot(Quail_Creek_Generation_Components) +
 #Matching the stream gage data to the power generation data.
 
 #High Shoals Dam
-high_shoals_power_water<-left_join(High_Shoals_Generation_Complete, gage_02143000)%>%
-  mutate(Power=as.numeric(Power))
+high_shoals_power_water<-left_join(High_Shoals_Generation_Complete, gage_02143000)
 
-ggplot(high_shoals_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point()+scale_y_log10()+geom_smooth()
+ggplot(high_shoals_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point()
 
 
-schoolfield_power_water<-left_join(Schoolfield_Generation_Complete, gage_02071000)%>%
-  mutate(Power=as.numeric(Power))
+
+schoolfield_power_water<-left_join(Schoolfield_Generation_Complete, gage_02071000)
 
 ggplot(schoolfield_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point()
 
 
-garland_power_water<-left_join(Garland_Generation_Complete, gage_06279940)%>%
-  mutate(Power=as.numeric(Power))
 
-ggplot(garland_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point()
+william_f_matson_power_water<-left_join(Matson_Generation_Complete, gage_01563200)
+
+ggplot(william_f_matson_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point()
+
+
+
+otis_power_water<-left_join(Otis_Generation_Complete, gage_01054500)
+
+ggplot(otis_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point()
+
+
+
+ware_power_water<-left_join(Ware_Shoals_Generation_Complete, gage_02163001)
+
+ggplot(ware_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point()
+
+
+
+garland_power_water<-left_join(Garland_Generation_Complete, gage_06279940)
+
+ggplot(garland_power_water, aes(x=average_monthly_discharge, y=Power, color=Year))+geom_point()
+
+
+
+chester_power_water<-left_join(Chester_Generation_Complete, gage_13046000)
+
+ggplot(chester_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point()
+
+
+
+tri_county_power_water<-left_join(Tri_County_Generation_Complete, gage_09146200)
+
+ggplot(tri_county_power_water, aes(x=average_monthly_discharge, y=Power, color=Year))+geom_point()
+
+
+
+#glen canyon
+
+
+
+quail_power_water<-left_join(Quail_Creek_Generation_Complete, gage_09408135)
+
+ggplot(quail_power_water, aes(x=average_monthly_discharge, y=Power, color=Year))+geom_point()
+
+
+
 
 ```
 
