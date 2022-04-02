@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 title: "Final Project - Hydro Power Generation and Streamflow Analysis"
 author: "Kaitlyn Elliott and Jon Nichols"
 output: pdf_document
@@ -23,6 +28,7 @@ library(cowplot)
 library(readr)
 library(zoo)
 library(Kendall)
+#install.packages("tseries")
 library(tseries)
 
 theme_set(theme_classic())
@@ -814,7 +820,66 @@ ggplot(quail_power_water, aes(x=average_monthly_discharge, y=Power, color=Year))
 
 
 
+```
+
+```{r}
+#cowplots for hydro generation 
+
+plot_hs<-ggplot(High_Shoals_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "High Shoals")
+
+plot_school<-ggplot(Schoolfield_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Schoolfield")
+
+plot_matson<-ggplot(Matson_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Matson")
+
+plot_otis<-ggplot(Otis_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Otis")
+
+plot_ws<-ggplot(Ware_Shoals_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Ware Shoals")
+
+plot_gar<-ggplot(Garland_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Garland")
+
+plot_ches<-ggplot(Chester_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Chester")
+
+plot_tri<-ggplot(Tri_County_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Tri_County")
+
+plot_glen<-ggplot(Glen_Canyon_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Glen_Canyon")
+
+plot_quail<-ggplot(Quail_Creek_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Quail_Creek")
+
+power_plot<-plot_grid(plot_hs, plot_school, plot_matson, plot_otis, plot_ws, plot_gar, plot_ches, plot_tri, plot_glen,plot_quail, ncol = 4, align="hv")
+
+title_gg_2 <- ggplot() + labs(title = "Hydropower Generation for Sampled Power Plants", subtitle = "Blue indicates eastern states while red indicates western states.")
+
+plot_grid(title_gg_2, power_plot, ncol = 1, rel_heights = c(0.08,1))
+
 
 ```
+
+
+```{r}
+
+#Visualization of Dams
+
+library(sf)
+library(mapview)
+
+locations <- read.csv("./Generation_Sites.csv", stringsAsFactors = TRUE) 
+locations <- locations %>%
+  rename(Plant_Name = ï..Name)
+
+
+#Convert to a spatial dataframe
+locations.sf <- locations %>% 
+  st_as_sf(coords = c('Longitude','Latitude'),
+           crs=4326)
+
+mapview(locations.sf, cex = "MW")
+
+ggplot(locations.sf)+
+  geom_sf()
+
+
+
+```
+
 
 ## Results 
