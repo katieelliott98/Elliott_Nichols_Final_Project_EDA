@@ -598,6 +598,7 @@ ggplot(High_Shoals_Generation_Components) +
   geom_line(aes(y = Observed, x = Date),  size = 0.25) +
   geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
   geom_hline(yintercept = 0, lty = 2) +
+  ggtitle("High Shoals Trend Analysis")+
   ylab(expression("Power (MWh)"))
 
 
@@ -655,6 +656,7 @@ ggplot(Quail_Creek_Generation_Components) +
 ggplot(High_Shoals_Generation_Components) +
   geom_line(aes(y = Observed, x = Date),  size = 0.25) +
   geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  ggtitle("High Shoals Seasonality Analysis")+
   geom_hline(yintercept = 0, lty = 2) +
   ylab(expression("Power (MWh)"))
 
@@ -785,7 +787,7 @@ ggplot(quail_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(
 
 ```
 
-```{r}
+```{r Hydro Generation PLotted Over Time}
 #cowplots for hydro generation 
 
 plot_hs<-ggplot(High_Shoals_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "High Shoals")+ylim(0,16000)
@@ -827,6 +829,8 @@ grid.arrange(arrangeGrob(plot_grid_power, left = y.grob_power))
 
 #Visualization of Dams
 
+#install.packages("maps")
+library(maps)
 
 locations <- read.csv("./Generation_Sites.csv", stringsAsFactors = TRUE) 
 locations <- locations %>%
@@ -834,7 +838,7 @@ locations <- locations %>%
 
 final_locations<-locations[-c(9),]
 
-states <- st_as_sf(map(database = "state", plot = TRUE, fill = TRUE, col = "white"))
+states <- st_as_sf(maps::map(database = "state", plot = TRUE, fill = TRUE, col = "white"))
 
 #Convert to a spatial dataframe
 locations.sf <- final_locations %>% 
@@ -848,6 +852,51 @@ ggplot() +
 
 #ggplot(locations.sf)+
   #geom_sf()
+
+
+
+```
+
+
+```{r}
+#testing whether there is a linear relationship between streamflow and power generation 
+
+high_shoals_regression <- lm(data = high_shoals_power_water, Power ~ average_monthly_discharge)
+summary(high_shoals_regression)
+
+
+schoolfield_regression <- lm(data = schoolfield_power_water, Power ~ average_monthly_discharge)
+summary(schoolfield_regression)
+
+matson_regression <- lm(data = william_f_matson_power_water, Power ~ average_monthly_discharge)
+summary(matson_regression)
+
+otis_regression <- lm(data = otis_power_water, Power ~ average_monthly_discharge)
+summary(otis_regression)
+
+ware_shoals_regression <- lm(data = ware_power_water, Power ~ average_monthly_discharge)
+summary(ware_shoals_regression)
+
+garland_regression <- lm(data =garland_power_water, Power ~ average_monthly_discharge)
+summary(garland_regression)
+
+chester_regression <- lm(data = chester_power_water, Power ~ average_monthly_discharge)
+summary(chester_regression)
+
+tri_county_regression <- lm(data = tri_county_power_water, Power ~ average_monthly_discharge)
+summary(tri_county_regression)
+
+quail_regression <- lm(data = quail_power_water, Power ~ average_monthly_discharge)
+summary(quail_regression)
+
+
+
+
+
+
+
+
+
 
 
 
