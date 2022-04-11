@@ -834,7 +834,7 @@ grid.arrange(arrangeGrob(plot_grid_power, left = y.grob_power))
 #Visualization of Dams
 
 #install.packages("maps")
-library(maps)
+
 
 locations <- read.csv("./Generation_Sites.csv", stringsAsFactors = TRUE) 
 locations <- locations %>%
@@ -851,12 +851,18 @@ locations.sf <- final_locations %>%
 
 mapview(locations.sf, cex = "MW")
 
-ggplot() +
-  geom_sf(data= states, fill = "white")+geom_sf(data= locations.sf)
 
-#ggplot(locations.sf)+
-  #geom_sf()
 
+gage_sites_lat_long<- read.csv("./Processed_data/gage_sites_lat_long.csv")
+
+gage_sites_lat_long<-gage_sites_lat_long[-c(10,11), ] 
+
+locations.gs <- gage_sites_lat_long %>% 
+  rename(lat = ï..lat)%>%
+  st_as_sf(coords = c('long','lat'),
+           crs=4326)
+
+ggplot()+geom_sf(data= states, fill = "white")+geom_sf(data= locations.sf)+geom_sf(data=locations.gs, col="red", alpha=0.5)
 
 
 ```
@@ -892,7 +898,6 @@ summary(tri_county_regression)
 
 quail_regression <- lm(data = quail_power_water, Power ~ average_monthly_discharge)
 summary(quail_regression)
-
 
 
 
