@@ -1,6 +1,8 @@
 ---
-output: html_document
-editor_options: 
+output:
+  html_document: default
+  pdf_document: default
+editor_options:
   chunk_output_type: console
 ---
 title: "Final Project - Hydro Power Generation and Streamflow Analysis"
@@ -56,7 +58,27 @@ options(scipen = 6)
 
 Hydroelectric generation data was collected from the EIA, and streamflow data was collected from the USGS. Generation data was obtained through the EIA's Electricity Data Browser, which is an interactive query tool. Nine separate queries - one for each hydropower plant- were used to download the data needed for the analysis. For each query, we used the date range January 2001 through December 2021. Data was downloaded as a "Chart (CSV)", which presented four rows of descriptive information and then two columns for the Month and "All primemovers - All fuels (ALL) megawatthours". The descriptive info of each generation dataset was cleaned in Excel to streamline data import into R. 
 
+Detail   | Description
+---------| ------------- 
+Data Source | EIA Net Generation Data   
+Retrieved From | https://www.eia.gov/beta/electricity/data/browser/#/plant/10550/?freq=M&pin=
+Variables Used | Month, "All fuels (ALL) megawatthours"
+Date Range | January 2001 - December 2021
+
+NEED HELP WITH CREATING A TITLE FOR THAT TABLE 
 SOMETHING ABOUT RETRIEVING USGS DATA 
+
+
+## Data Wrangling
+
+After streamflow data was imported, the column containing discharge data was mutated and titled “Discharge”. Next, three columns were selected: Discharge, Datetime, and Site Number. The Datetime was mutated to produce a Year column and a Month column. We then grouped the dataset by the year and month, and created an “Average Monthly Discharge” column. This process was repeated for each stream gauge dataset. Additionally, an arbitrary day - the first of each month - was added to each imported dataset to enable proper formatting. 
+
+After hydroelectric generation data was imported, the Date column had to be wrangled and reformatted to allow for further analysis. Month and year columns were added to each dataset, generation data was transformed to be numeric, the date column was converted to a date variable in R, and data was arranged in ascending fashion. Empty or “NA” values were then dropped to have complete sets of data for each hydroelectric plant. 
+
+After importing and wrangling hydroelectric generation and streamflow data separately, we used a left join function to combine the datasets for each specific facility. Given that some generation data was missing for the 20-year period, we used left join to match the streamflow data to the generation data that did exist for each site. 
+
+
+
 
 ```{r}
 #Reading in stream data
