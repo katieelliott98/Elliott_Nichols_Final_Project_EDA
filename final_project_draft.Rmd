@@ -591,6 +591,8 @@ summary(quail_creek_trend1)
 
 ```
 
+High Shoals, Ware Shoals, Tri County, and Quail Creek all demonstrate trends, as their 2-sided p value were below 0.5 and thus the null hypothesis was rejected. 
+
 ```{r}
 # Visualize how the trend maps onto the data
 
@@ -606,6 +608,7 @@ ggplot(Schoolfield_Generation_Components) +
   geom_line(aes(y = Observed, x = Date),  size = 0.25) +
   geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
   geom_hline(yintercept = 0, lty = 2) +
+  ggtitle("Schoolfield Trend Analysis")+
   ylab(expression("Power (MWh)"))
 
 ggplot(Matson_Generation_Components) +
@@ -643,6 +646,7 @@ ggplot(Tri_County_Generation_Components) +
   geom_line(aes(y = Observed, x = Date),  size = 0.25) +
   geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
   geom_hline(yintercept = 0, lty = 2) +
+  ggtitle("Tri County Trend Analysis")+
   ylab(expression("Power (MWh)"))
 
 
