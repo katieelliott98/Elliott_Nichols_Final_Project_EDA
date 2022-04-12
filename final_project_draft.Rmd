@@ -351,7 +351,7 @@ plot10<-ggplot(gage_13046000, aes(x=date, y=average_monthly_discharge))+geom_lin
 
 discharge_plot<-plot_grid(plot1, plot2, plot3, plot4, plot5, plot6, plot7, plot9, plot10, ncol = 3, align="hv")
 
-title_gg <- ggplot() + labs(title = "Discharge Measurements for Streams Associated with Hydropower Generation", subtitle = "Blue indicates eastern states while red indicates western states.")
+title_gg <- ggplot() + labs(title = "Figure 1: Discharge Measurements for Streams Associated with Hydropower Generation", subtitle = "Blue indicates eastern states while red indicates western states.")
 
 discharge_plot_grid<-plot_grid(title_gg, discharge_plot, ncol = 1, rel_heights = c(0.08,1))+theme(plot.margin=margin(10,5,10,10))
 
@@ -362,9 +362,56 @@ grid.arrange(arrangeGrob(discharge_plot_grid, left = y.grob_dis))
 
 ```
 
+
+## Hydroelectric Generation Visualization 
+
+```{r}
+#cowplots for hydro generation 
+
+plot_hs<-ggplot(High_Shoals_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "High Shoals")+ylim(0,4000)
+
+plot_school<-ggplot(Schoolfield_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Schoolfield")+ylim(0,4000)
+
+plot_matson<-ggplot(Matson_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Matson")+ylim(0,16000)
+
+plot_otis<-ggplot(Otis_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Otis")+ylim(0,10000)
+
+plot_ws<-ggplot(Ware_Shoals_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Ware Shoals")+ylim(0,7500)
+
+plot_gar<-ggplot(Garland_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Garland")+ylim(0,4000)
+
+plot_ches<-ggplot(Chester_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Chester")+ylim(0,2000)
+
+plot_tri<-ggplot(Tri_County_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Tri County")+ylim(0,7500)
+
+
+plot_quail<-ggplot(Quail_Creek_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Quail Creek")+ylim(0,3000)
+
+power_plot<-plot_grid(plot_hs, plot_school, plot_matson, plot_otis, plot_ws, plot_gar, plot_ches, plot_tri,plot_quail, ncol = 3, align="hv")
+
+title_gg_2 <- ggplot() + labs(title = "Figure 2: Hydropower Generation for Sampled Power Plants", subtitle = "Blue indicates eastern states while red indicates western states.")
+
+plot_grid_power<-plot_grid(title_gg_2, power_plot, ncol = 1, rel_heights = c(0.08,1))+theme(plot.margin=margin(30, 10, 10, 10))
+
+y.grob_power<-textGrob("Power Generation (MWh)", 
+                   gp=gpar(col="black", fontsize=10), rot=90)
+
+grid.arrange(arrangeGrob(plot_grid_power, left = y.grob_power))
+
+
+
+```
+
+
 ## Data Analysis
 
-Testing for trends in discharge and generation data.
+Question 1: Are there trends in the streamflow data? 
+
+Following our initial wrangling, we created plot grids to visualize the streamflow and generation data. Figure 1 displays the discharge measurements for the streams associated with the selected hydropower plants. Figure 2 displays the electric generation for the sampled power plants. Both visualizations compared sites in the Western US to sites in the Eastern US. Both graphs appeared to show strong seasonal components. 
+
+After visualizing the data, we investigated trends in streamflow. We created a time series for each stream gauge, and then decomposed each time series into its seasonal, trend, and remainder components. SOMETHING ABOUT RESULT
+
+
 
 ```{r}
 gage_01054500_ts<-ts(gage_01054500[[3]], frequency = 12,  start = c(2000, 1), end = c(2021, 12))
@@ -444,6 +491,12 @@ summary(trend_gage_13046000)
 
 
 ```
+
+Question 2: Are there trends in the generation data? 
+
+We ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in streamflow over time. The results are displayed in Table 1. 
+Additionally, we ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in hydroelectric generation over time. The results are displayed in Table 2. Two plants, High Shoals and Quail Creek, display a slight statististically significant positive trend over time. Conversely, Ware Shoals and Tri County display a statistically significant negative trend over time. Tri County, which is located in Colorado, has a relatively substantial negative trend. The other hydropower plants have 2-sided P-values greater than 0.05, and thus we cannot reject the null hypothesis that no trend exists. Overall, the results indicate that hydropower generation demonstrates no clear trend on the national level, and each power plant is subject to unique conditions that may cause generation to trend in either direction. 
+
 
 ```{r}
 f_month_1<- month(first(High_Shoals_Generation_Complete$Date))
@@ -624,6 +677,13 @@ quail_creek_trend1 <- Kendall::SeasonalMannKendall(quail_creek_ts)
 quail_creek_trend1
 summary(quail_creek_trend1)
 
+generation_smk_results <- data.frame(
+  Hydropower_Plants = c("High Shoals", "Schoolfield", "Matson", "Otis", "Ware Shoals", "Garland", "Chetser", "Tri County", "Quail Creek"),
+  tau = c(0.097,0.026,0.050,-0.052,-0.105,-0.102,0.075,-0.292,0.100),
+  Two_sided_P_value = c(0.033,0.562,0.271,0.249,0.021,0.115,0.386,0.001,0.028)
+)
+
+kable(generation_smk_results, caption = "Seasonal Mann Kendall Tests for Hydroelectric Generation")
 
 ```
 
@@ -827,42 +887,7 @@ ggplot(quail_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(
 
 ```
 
-```{r Hydro Generation PLotted Over Time}
-#cowplots for hydro generation 
 
-plot_hs<-ggplot(High_Shoals_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "High Shoals")+ylim(0,16000)
-
-plot_school<-ggplot(Schoolfield_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Schoolfield")+ylim(0,16000)
-
-plot_matson<-ggplot(Matson_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Matson")+ylim(0,16000)
-
-plot_otis<-ggplot(Otis_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Otis")+ylim(0,16000)
-
-plot_ws<-ggplot(Ware_Shoals_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "Ware Shoals")+ylim(0,16000)
-
-plot_gar<-ggplot(Garland_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Garland")+ylim(0,16000)
-
-plot_ches<-ggplot(Chester_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Chester")+ylim(0,16000)
-
-plot_tri<-ggplot(Tri_County_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Tri County")+ylim(0,16000)
-
-
-plot_quail<-ggplot(Quail_Creek_Generation, aes(x=Date, y=Power))+geom_line(color="red")+labs(x="", y="", title = "Quail Creek")+ylim(0,16000)
-
-power_plot<-plot_grid(plot_hs, plot_school, plot_matson, plot_otis, plot_ws, plot_gar, plot_ches, plot_tri,plot_quail, ncol = 3, align="hv")
-
-title_gg_2 <- ggplot() + labs(title = "Hydropower Generation for Sampled Power Plants", subtitle = "Blue indicates eastern states while red indicates western states.")
-
-plot_grid_power<-plot_grid(title_gg_2, power_plot, ncol = 1, rel_heights = c(0.08,1))+theme(plot.margin=margin(30, 10, 10, 10))
-
-y.grob_power<-textGrob("Power Generation (MWh)", 
-                   gp=gpar(col="black", fontsize=10), rot=90)
-
-grid.arrange(arrangeGrob(plot_grid_power, left = y.grob_power))
-
-
-
-```
 
 
 ```{r}
