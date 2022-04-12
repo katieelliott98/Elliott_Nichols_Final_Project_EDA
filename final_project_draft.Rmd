@@ -411,6 +411,8 @@ Following our initial wrangling, we created plot grids to visualize the streamfl
 
 After visualizing the data, we investigated trends in streamflow. We created a time series for each stream gauge, and then decomposed each time series into its seasonal, trend, and remainder components. SOMETHING ABOUT RESULT
 
+We ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in streamflow over time. The results are displayed in Table 1. 
+
 
 
 ```{r}
@@ -494,7 +496,7 @@ summary(trend_gage_13046000)
 
 Question 2: Are there trends in the generation data? 
 
-We ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in streamflow over time. The results are displayed in Table 1. 
+
 Additionally, we ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in hydroelectric generation over time. The results are displayed in Table 2. Two plants, High Shoals and Quail Creek, display a slight statististically significant positive trend over time. Conversely, Ware Shoals and Tri County display a statistically significant negative trend over time. Tri County, which is located in Colorado, has a relatively substantial negative trend. The other hydropower plants have 2-sided P-values greater than 0.05, and thus we cannot reject the null hypothesis that no trend exists. Overall, the results indicate that hydropower generation demonstrates no clear trend on the national level, and each power plant is subject to unique conditions that may cause generation to trend in either direction. 
 
 
@@ -687,7 +689,7 @@ kable(generation_smk_results, caption = "Seasonal Mann Kendall Tests for Hydroel
 
 ```
 
-High Shoals, Ware Shoals, Tri County, and Quail Creek all demonstrate trends, as their 2-sided p value were below 0.5 and thus the null hypothesis was rejected. 
+ggplot was used to graphically represent the trend and seasonal components relative to the observed generation data. Additional figures are included in the R code file associated with this report. 
 
 ```{r}
 # Visualize how the trend maps onto the data
@@ -825,63 +827,74 @@ ggplot(Quail_Creek_Generation_Components) +
 #High Shoals Dam
 high_shoals_power_water<-left_join(High_Shoals_Generation_Complete, gage_02143000)
 
-ggplot(high_shoals_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8)+labs(x=~"Average Monthly Discharge " (ft^3/s), y="Power (MWh)", title="High Shoals")
+hs_combined_plot <- ggplot(high_shoals_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8, color = "blue")+labs(x=~"", y="", title="High Shoals")
 
 
 
 
 schoolfield_power_water<-left_join(Schoolfield_Generation_Complete, gage_02071000)
 
-ggplot(schoolfield_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8)+labs(x=~"Average Monthly Discharge " (ft^3/s), y="Power (MWh)", title="Schoolfield")
+schoolfield_combined_plot <- ggplot(schoolfield_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8, color = "blue")+labs(x=~"", y="", title="Schoolfield")
 
 
 
 
 william_f_matson_power_water<-left_join(Matson_Generation_Complete, gage_01563200)
 
-ggplot(william_f_matson_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8)+labs(x=~"Average Monthly Discharge " (ft^3/s), y="Power (MWh)", title="William F Matson")
+matson_combined_plot <- ggplot(william_f_matson_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8, color = "blue")+labs(x=~"", y="", title="William F Matson")
 
 
 
 
 otis_power_water<-left_join(Otis_Generation_Complete, gage_01054500)
 
-ggplot(otis_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(apha=0.8)+labs(x=~"Average Monthly Discharge " (ft^3/s), y="Power (MWh)", title="Otis")
+otis_combined_plot <- ggplot(otis_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(apha=0.8, color = "blue")+labs(x=~"", y="", title="Otis")
 
 
 
 
 ware_power_water<-left_join(Ware_Shoals_Generation_Complete, gage_02163001)
 
-ggplot(ware_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8)+labs(x=~"Average Monthly Discharge " (ft^3/s), y="Power (MWh)", title="Ware Shoals")
+ws_combined_plot <- ggplot(ware_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8, color = "blue")+labs(x=~"", y="", title="Ware Shoals")
 
 
 
 
 garland_power_water<-left_join(Garland_Generation_Complete, gage_06279940)
 
-ggplot(garland_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8)+labs(x=~"Average Monthly Discharge " (ft^3/s), y="Power (MWh)", title="Garland")
+garland_combined_plot <- ggplot(garland_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8, color = "red")+labs(x=~"", y="", title="Garland")
 
 
 
 
 chester_power_water<-left_join(Chester_Generation_Complete, gage_13046000)
 
-ggplot(chester_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8)+labs(x=~"Average Monthly Discharge " (ft^3/s), y="Power (MWh)", title="Chester")
+chester_combined_plot <- ggplot(chester_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8, color = "red")+labs(x=~"", y="", title="Chester")
 
 
 
 
 tri_county_power_water<-left_join(Tri_County_Generation_Complete, gage_09146200)
 
-ggplot(tri_county_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8)+labs(x=~"Average Monthly Discharge " (ft^3/s), y="Power (MWh)", title="Tri County")
+tri_county_combined_plot <- ggplot(tri_county_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8, color = "red")+labs(x=~"", y="", title="Tri County")
 
 
 
 
 quail_power_water<-left_join(Quail_Creek_Generation_Complete, gage_09408135)
 
-ggplot(quail_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8)+labs(x=~"Average Monthly Discharge " (ft^3/s), y="Power (MWh)", title="Quail Creek")
+quail_combined_plot <- ggplot(quail_power_water, aes(x=average_monthly_discharge, y=Power))+geom_point(alpha=0.8, color = "red")+labs(x=~"", y="Power (MWh)", title="Quail Creek")
+
+combined_plot<-plot_grid(hs_combined_plot, schoolfield_combined_plot, matson_combined_plot, otis_combined_plot, ws_combined_plot, garland_combined_plot, chester_combined_plot, tri_county_combined_plot,quail_combined_plot, ncol = 3, align="hv")
+
+title_gg_3 <- ggplot() + labs(title = "Figure 3: Scatterplot of Streamflow and Power Production", subtitle = "Blue indicates eastern states while red indicates western states.")
+
+combined_plot_grid<-plot_grid(title_gg_3, combined_plot, ncol = 1, rel_heights = c(0.08,1))+theme(plot.margin=margin(30, 10, 10, 10))
+
+y.grob_power_2<-textGrob("Power Generation (MWh)", 
+                   gp=gpar(col="black", fontsize=10), rot=90)
+
+grid.arrange(arrangeGrob(combined_plot_grid, left = y.grob_power_2))
 
 
 
