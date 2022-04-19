@@ -203,23 +203,23 @@ gage_13046000<-gage_13046000 %>%
   mutate(day="01",date=as.Date(paste(Month, day, Year, sep = "-"),
                                format="%m-%d-%Y"))
 #Reading in generation data
-High_Shoals_Generation <- read.csv("./Final Project Hydro Generation Data/High_Shoals_Hydro_(NC)_net_generation (1).csv")
+High_Shoals_Generation <- read.csv("./Raw_Data/High_Shoals_Hydro_(NC)_net_generation (1).csv")
 
-Schoolfield_Generation <- read.csv("./Final Project Hydro Generation Data/Schoolfield_Dam_net_generation.csv")
+Schoolfield_Generation <- read.csv("./Raw_Data/Schoolfield_Dam_net_generation.csv")
 
-Matson_Generation <- read.csv("./Final Project Hydro Generation Data/William_F_Matson_Generating_Station_net_generation.csv")
+Matson_Generation <- read.csv("./Raw_Data/William_F_Matson_Generating_Station_net_generation.csv")
 
-Otis_Generation <- read.csv("./Final Project Hydro Generation Data/Otis_Hydro_net_generation.csv")
+Otis_Generation <- read.csv("./Raw_Data/Otis_Hydro_net_generation.csv")
 
-Ware_Shoals_Generation <- read.csv("./Final Project Hydro Generation Data/Ware_Shoals_Hydro_Project_net_generation.csv")
+Ware_Shoals_Generation <- read.csv("./Raw_Data/Ware_Shoals_Hydro_Project_net_generation.csv")
 
-Garland_Generation <- read.csv("./Final Project Hydro Generation Data/Garland_Canal_Power_Plant_net_generation.csv")
+Garland_Generation <- read.csv("./Raw_Data/Garland_Canal_Power_Plant_net_generation.csv")
 
-Chester_Generation <- read.csv("./Final Project Hydro Generation Data/Chester_Diversion_Hydroelectric_Project_net_generation.csv")
+Chester_Generation <- read.csv("./Raw_Data/Chester_Diversion_Hydroelectric_Project_net_generation.csv")
 
-Tri_County_Generation <- read.csv("./Final Project Hydro Generation Data/Tri-County_Water_Hydropower_Project_net_generation.csv")
+Tri_County_Generation <- read.csv("./Raw_Data/Tri-County_Water_Hydropower_Project_net_generation.csv")
 
-Quail_Creek_Generation <- read.csv("./Final Project Hydro Generation Data/Quail_Creek_Hydro_Plant_#1_net_generation.csv")
+Quail_Creek_Generation <- read.csv("./Raw_Data/Quail_Creek_Hydro_Plant_#1_net_generation.csv")
 
 
 High_Shoals_Generation <- High_Shoals_Generation[-c(1),]
@@ -348,6 +348,72 @@ Quail_Creek_Generation_Complete <-  Quail_Creek_Generation[!(is.na(Quail_Creek_G
 
 
 ```
+
+```{r}
+
+write.csv(High_Shoals_Generation_Complete, row.names = FALSE, 
+          file ="./Processed_data/High_Shoals_Generation_Complete.csv")
+
+write.csv(Schoolfield_Generation_Complete, row.names = FALSE, 
+          file ="./Processed_data/Schoolfield_Generation_Complete.csv")
+
+write.csv(Matson_Generation_Complete, row.names = FALSE, 
+          file ="./Processed_data/Matson_Generation_Complete.csv")
+
+write.csv(Otis_Generation_Complete, row.names = FALSE, 
+          file ="./Processed_data/Otis_Generation_Complete.csv")
+
+write.csv(Ware_Shoals_Generation_Complete, row.names = FALSE, 
+          file ="./Processed_data/Ware_Shoals_Generation_Complete.csv")
+
+write.csv(Garland_Generation_Complete, row.names = FALSE, 
+          file ="./Processed_data/Garland_Generation_Complete.csv")
+
+write.csv(Chester_Generation_Complete, row.names = FALSE, 
+          file ="./Processed_data/Chester_Generation_Complete.csv")
+
+write.csv(Tri_County_Generation_Complete, row.names = FALSE, 
+          file ="./Processed_data/Tri_County_Generation_Complete.csv")
+
+write.csv(Quail_Creek_Generation_Complete, row.names = FALSE, 
+          file ="./Processed_data/Quail_Creek_Generation_Complete.csv")
+
+
+write.csv(gage_01054500, row.names = FALSE, 
+          file ="./Processed_data/gage_01054500_processed.csv")
+
+write.csv(gage_01563200, row.names = FALSE, 
+          file ="./Processed_data/gage_01563200_processed.csv")
+
+write.csv(gage_02071000, row.names = FALSE, 
+          file ="./Processed_data/gage_02071000_processed.csv")
+
+write.csv(gage_02143000, row.names = FALSE, 
+          file ="./Processed_data/gage_02143000_processed.csv")
+
+write.csv(gage_02163001, row.names = FALSE, 
+          file ="./Processed_data/gage_02163001_processed.csv")
+
+write.csv(gage_06279940, row.names = FALSE, 
+          file ="./Processed_data/gage_06279940_processed.csv")
+
+write.csv(gage_09146200, row.names = FALSE, 
+          file ="./Processed_data/gage_09146200_processed.csv")
+
+write.csv(gage_09408135, row.names = FALSE, 
+          file ="./Processed_data/gage_09408135_processed.csv")
+
+write.csv(gage_13046000, row.names = FALSE, 
+          file ="./Processed_data/gage_13046000_processed.csv")
+
+
+
+
+
+
+```
+
+
 
 \newpage
 
