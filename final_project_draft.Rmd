@@ -1,14 +1,9 @@
 ---
-output:
-  html_document: default
-  pdf_document: default
-editor_options:
-  chunk_output_type: console
----
 title: "Final Project - Hydro Power Generation and Streamflow Analysis"
 author: "Kaitlyn Elliott and Jon Nichols"
 output: pdf_document
 geometry: margin=2.54cm
+always_allow_html: true
 editor_options: 
   chunk_output_type: console
 ---
@@ -27,7 +22,7 @@ In this project we set out to explore the relationship between hydro power gener
 
 ## Set Up  
 
-```{r}
+```{r Library_Setup, include=FALSE}
 
 getwd()
 
@@ -40,7 +35,6 @@ library(cowplot)
 library(readr)
 library(zoo)
 library(Kendall)
-#install.packages("tseries")
 library(tseries)
 library(grid)
 library(gridExtra)
@@ -48,9 +42,10 @@ library(knitr)
 library(sf)
 library(mapview)
 library(maps)
+library(kableExtra)
 
 theme_set(theme_classic())
-options(scipen = 6)
+options(scipen = 12)
 
 ```
 
@@ -58,15 +53,26 @@ options(scipen = 6)
 
 Hydroelectric generation data was collected from the EIA, and streamflow data was collected from the USGS. Generation data was obtained through the EIA's Electricity Data Browser, which is an interactive query tool. Nine separate queries - one for each hydropower plant- were used to download the data needed for the analysis. For each query, we used the date range January 2001 through December 2021. Data was downloaded as a "Chart (CSV)", which presented four rows of descriptive information and then two columns for the Month and "All primemovers - All fuels (ALL) megawatthours". The descriptive info of each generation dataset was cleaned in Excel to streamline data import into R. Further information on the generation data is provided in the table below. 
 
+Table 1. Data Information for Hydropower Generation
+
 Detail   | Description
 ---------| ------------- 
 Data Source | EIA Net Generation Data   
 Retrieved From | https://www.eia.gov/beta/electricity/data/browser/#/plant/10550/?freq=M&pin=
 Variables Used | Month, "All fuels (ALL) megawatthours"
 Date Range | January 2001 - December 2021
+ 
+ 
+ 
+Table 2. Data Information for Stream Discharge
 
-NEED HELP WITH CREATING A TITLE FOR THAT TABLE 
-SOMETHING ABOUT RETRIEVING USGS DATA 
+Detail   | Description
+---------|--------------
+Data Source | USGS Stream Discharge Data
+Retrieved From | USGS using readNWISdata
+Variables Used | Date, Discharge
+Date Range | January 2000 - December 2021
+
 
 
 ## Data Wrangling
@@ -80,7 +86,7 @@ After importing and wrangling hydroelectric generation and streamflow data separ
 
 
 
-```{r}
+```{r reading_in_data, include=FALSE}
 #Reading in stream data
 
 #East Stream Gage Sites
@@ -339,17 +345,17 @@ Quail_Creek_Generation_Complete <-  Quail_Creek_Generation[!(is.na(Quail_Creek_G
 
 Following our initial wrangling, we created plot grids to visualize the streamflow and generation data. Both visualizations compared sites in the Western US to sites in the Eastern US. Streamflow data for each site was graphically visualized using the cowplot plot_grid function. Figure 1 displays the discharge measurements for the selected stream gauges over the last 20 years. 
 
-```{r}
+```{r discharge_vis, echo=FALSE}
 
-plot1<-ggplot(gage_01054500, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Gage 01054500")+ylim(0,15000)
-plot2<-ggplot(gage_01563200, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Gage 01563200")+ylim(0,15000)
-plot3<-ggplot(gage_02071000, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Gage 02071000")+ylim(0,15000)
-plot4<-ggplot(gage_02143000, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Gage 02143000")+ylim(0,15000)
-plot5<-ggplot(gage_02163001, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Gage 02163001")+ylim(0,15000)
-plot6<-ggplot(gage_06279940, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs(x="", y="", title = "Gage 06279940")+ylim(0,15000)
-plot7<-ggplot(gage_09146200, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs(x="", y="", title = "Gage 09146200")+ylim(0,15000)
-plot9<-ggplot(gage_09408135, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs( x="", y="", title = "Gage 09408135")+ylim(0,15000)+scale_x_date(limits=as.Date(c("2000-01-01", "2021-12-31")))
-plot10<-ggplot(gage_13046000, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs(x="", y="", title = "Gage 13046000")+ylim(0,15000)
+plot1<-ggplot(gage_01054500, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Otis")+ylim(0,15000)
+plot2<-ggplot(gage_01563200, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Maston")+ylim(0,15000)
+plot3<-ggplot(gage_02071000, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Schoolfield")+ylim(0,15000)
+plot4<-ggplot(gage_02143000, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "High Shoals")+ylim(0,15000)
+plot5<-ggplot(gage_02163001, aes(x=date, y=average_monthly_discharge))+geom_line(color="blue")+labs(x="", y="", title = "Ware Shoals")+ylim(0,15000)
+plot6<-ggplot(gage_06279940, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs(x="", y="", title = "Garland")+ylim(0,15000)
+plot7<-ggplot(gage_09146200, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs(x="", y="", title = "Tri County")+ylim(0,15000)
+plot9<-ggplot(gage_09408135, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs( x="", y="", title = "Quail Creek")+ylim(0,15000)+scale_x_date(limits=as.Date(c("2000-01-01", "2021-12-31")))
+plot10<-ggplot(gage_13046000, aes(x=date, y=average_monthly_discharge))+geom_line(color="red")+labs(x="", y="", title = "Chester")+ylim(0,15000)
 
 discharge_plot<-plot_grid(plot1, plot2, plot3, plot4, plot5, plot6, plot7, plot9, plot10, ncol = 3, align="hv")
 
@@ -369,7 +375,7 @@ grid.arrange(arrangeGrob(discharge_plot_grid, left = y.grob_dis))
 
 Hydroelectric data for each power plant was also graphically visualized using the cowplot plot_grid function. Figure 2 displays hydropower generation for the selected power plants over the last 20 years. 
 
-```{r}
+```{r power_vis, echo=FALSE}
 #cowplots for hydro generation 
 
 plot_hs<-ggplot(High_Shoals_Generation, aes(x=Date, y=Power))+geom_line(color="blue")+labs(x="", y="", title = "High Shoals")+ylim(0,4000)
@@ -417,7 +423,7 @@ We ran a Seasonal Mann-Kendall test on each time series to test whether there wa
 
 
 
-```{r}
+```{r smk_gage, include=FALSE}
 gage_01054500_ts<-ts(gage_01054500[[3]], frequency = 12,  start = c(2000, 1), end = c(2021, 12))
 decom_01054500<-stl(gage_01054500_ts, s.window = "periodic")
 plot(decom_01054500)
@@ -491,17 +497,21 @@ plot(decom_13046000)
 trend_gage_13046000<-smk.test(gage_13046000_ts)
 trend_gage_13046000
 summary(trend_gage_13046000)
-#kable(trend_gage_13046000)
+
+
 
 streamflow_smk_results <- data.frame(
   Stream_Gauges = c("High Shoals", "Schoolfield", "Matson", "Otis", "Ware Shoals", "Garland", "Chetser", "Tri County", "Quail Creek"),
-  tau = c(0.097,0.026,0.050,-0.052,-0.105,-0.102,0.075,-0.292,0.100),
-  Two_sided_P_value = c(0.033,0.562,0.271,0.249,0.021,0.115,0.386,0.001,0.028)
+  Z_Value = c(6.4388,5.8038,1.4408,-0.57794,6.8946,6.4876,-1.6932,-2.6455,-2.5804),
+  P_value = c(0.0000000001204,0.000000006481,0.1496,0.5633,0.000000000005401,0.00000000008721,0.09042,0.008157,0.009868)
 )
 
+```
+
+```{r smk_table_water, echo=FALSE}
 
 streamflow_smk_results %>%
-  kbl(caption = "Table 1: Seasonal Mann Kendall Tests for Streamflow") %>%
+  kbl(caption = "Seasonal Mann Kendall Trend Tests for Streamflow") %>%
   kable_classic(full_width = F, html_font = "Cambria")
 
 
@@ -512,7 +522,7 @@ Question 2: Are there trends in the generation data?
 We also created a time series for each hydropower plant, and then decomposed each time series into its seasonal, trend, and remainder components. We plotted each decomposed time series, and observed that each site displayed strong seasonal trends in streamflow. Additionally, we ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in hydroelectric generation over time. The results are displayed in Table 2. Two plants, High Shoals and Quail Creek, display a slight statistically significant positive trend over time. Conversely, Ware Shoals and Tri County display a statistically significant negative trend over time. Tri County, which is located in Colorado, has a relatively substantial negative trend. The Tri County result is consistent with the relatively significant drought conditions experienced in Colorado over the last 20 years. The other hydropower plants have 2-sided P-values greater than 0.05, and thus we cannot reject the null hypothesis that no trend exists. Overall, the results indicate that hydropower generation demonstrates no clear trend on the national level, and each power plant is subject to unique conditions that may cause generation to trend in either direction. 
 
 
-```{r}
+```{r smk_power, include=FALSE}
 f_month_1<- month(first(High_Shoals_Generation_Complete$Date))
 f_year_1<- year(first((High_Shoals_Generation_Complete$Date)))
 high_shoals_ts<- ts(High_Shoals_Generation_Complete$Power,
@@ -707,9 +717,14 @@ generation_smk_results <- data.frame(
   Two_sided_P_value = c(0.033,0.562,0.271,0.249,0.021,0.115,0.386,0.001,0.028)
 )
 
+```
+
+
+```{r smk_tablepower, echo=FALSE}
+
 
 generation_smk_results %>%
-  kbl(caption = "Seasonal Mann Kendall Tests for Hydroelectric Generation") %>%
+  kbl(caption = "Seasonal Mann Kendall Trend Tests for Hydroelectric Generation") %>%
   kable_classic(full_width = F, html_font = "Cambria")
 
 
@@ -718,7 +733,7 @@ generation_smk_results %>%
 
 ggplot was used to graphically represent the trend and seasonal components relative to the observed generation data. Additional figures are included in the R code file associated with this report. ggplot was also used to display the relationship between average monthly discharge and monthly power generation, as seen in Figure 3. 
 
-```{r}
+```{r trends_vis, include=FALSE}
 # Visualize how the trend maps onto the data
 
 ggplot(High_Shoals_Generation_Components) +
@@ -848,7 +863,7 @@ ggplot(Quail_Creek_Generation_Components) +
 
 ## Combining Datasets 
 
-```{r}
+```{r linear_regress, echo=FALSE}
 #Matching the stream gage data to the power generation data.
 
 #High Shoals Dam
@@ -930,14 +945,14 @@ grid.arrange(arrangeGrob(combined_plot_grid, left = y.grob_power_2))
 Locations of the streamflow gauges and hydroelectric plants were visualized in two distinct ways. Mapview displays the location of each hydroelectric plant, with each circle size representing the capacity of the individual plant relative to the other plants. Figure 4 uses ggplot and displays the locations of both the stream gauges and hydroelectric plants used in the analysis. 
 
 
-```{r}
+```{r maps, echo=FALSE}
 
 #Visualization of Dams
 
 #install.packages("maps")
 
 
-locations <- read.csv("./Generation_Sites.csv", stringsAsFactors = TRUE) 
+locations <- read.csv("./Processed_data/Generation_Sites.csv", stringsAsFactors = TRUE) 
 locations <- locations %>%
   rename(Plant_Name = ï..Name)
 
@@ -950,9 +965,8 @@ locations.sf <- final_locations %>%
   st_as_sf(coords = c('Longitude','Latitude'),
            crs=4326)
 
-mapview(locations.sf, cex = "MW")
 
-
+ggplot()+geom_sf(data=states, fill="white")+geom_sf(data=locations.sf, size=locations.sf$MW)+labs(title = "Figure 3: Hydroelectric Plants Shown by Generation Capacity")
 
 gage_sites_lat_long<- read.csv("./Processed_data/gage_sites_lat_long.csv")
 
@@ -973,7 +987,7 @@ Question 3: Is there a linear relationship between streamflow and power generati
 To investigate the linear relationship between streamflow and power generation, the lm function was utilized on each combined dataset. Each analysis resulted in a statistically significant linear regression equation and a statistically significant independet variable. Power generation and stresm discharge displayed a positive linear relationship in every sample analyzed, and the results are shown in Table 3. For some hydroelectric plants, such as Tri County and Matson, greater than 40% of the variation in power generation can be explained by streamflow. However, for other plants, such as High Shoals and Quail Creek, less than 20% of the variation in power generation can be explained by streamflow. The linear relationship between streamflow and generation diminishes at higher streamflow levels due to the maximum generation capacity of the hydropower plants. The analysis suggests that additional explanatory variables are needed to better capture fluctuations in hydroelectric generation. 
 
 
-```{r}
+```{r linear_regress_test, include=FALSE}
 #testing whether there is a linear relationship between streamflow and power generation 
 
 high_shoals_regression <- lm(data = high_shoals_power_water, Power ~ average_monthly_discharge)
@@ -1010,20 +1024,15 @@ regression_results <- data.frame(
   R2 = c(0.146,0.230,0.564,0.356,0.361,0.375,0.405,0.443,0.071)
 )
 
-install.packages("kableExtra")
-library(kableExtra)
+
+```
+
+```{r regression_table, echo=FALSE}
 
 regression_results %>%
-  kbl(caption = "Table 3: Linear Regression Results") %>%
+  kbl(caption = "Linear Regression Results") %>%
   kable_classic(full_width = F, html_font = "Cambria")
   
-
-
-
-
-
-
-
 
 ```
 
