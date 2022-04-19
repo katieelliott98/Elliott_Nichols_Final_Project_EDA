@@ -20,7 +20,7 @@ We examine 20 years of streamflow and electric generation data for 9 facilities 
 
 
 ## Background and Methods
-In this project we set out to explore the relationship between hydro power generation and stream generation. To do this we looked at power generation data from the EPI and stream gage data from the USGS. For generation data we selected generation sites/dams so that half were from the western United States and half from the East. Stream gage data was selected upstream from dams and reservoirs to get an accurate representation of stream flow over time. Both power generation data and stream flow was analyzed for seasonality and monotonic trends using a seasonal mann kendall test. This was to help understand if generation was increasing or decreasing as a result of stream flow. Although outside factors could also contribute increases or decreases in power generation.
+In this project we set out to explore the relationship between hydropower generation and stream discharge. To do this we looked at power generation data from the EIA and stream gage data from the USGS. For generation data we selected generation sites/dams so that half were from the western United States and half from the East. Stream gage data was selected upstream from dams and reservoirs to get an accurate representation of stream flow over time. Both power generation data and stream flow were analyzed for seasonality and monotonic trends using a seasonal mann kendall test. This was to help understand if generation was increasing or decreasing as a result of stream flow. Outside factors not included in the analysis could also contribute to increases or decreases in power generation.
 
 
 ```{r Library_Setup, include=FALSE}
@@ -67,7 +67,9 @@ Retrieved From | https://www.eia.gov/beta/electricity/data/browser/#/plant/10550
 Variables Used | Month, "All fuels (ALL) megawatthours"
 Date Range | January 2001 - December 2021
  
- 
+
+Streamflow data was obtained from USGS using readNWISdata function. Nine separate queries - one for each stremaflow gauge- were used to download the data needed for the analysis. For each query, we used the date range January 2000 through December 2021. Further information is provided in Table 2. 
+
  
 Table 2. Data Information for Stream Discharge
 
@@ -428,7 +430,7 @@ Question 1: Are there trends in the streamflow data?
 
 After visualizing the data, we investigated trends in streamflow. We created a time series for each stream gauge, and then decomposed each time series into its seasonal, trend, and remainder components. We plotted each decomposed time series, and observed that each site displayed strong seasonal trends in streamflow.
 
-We ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in streamflow over time. The results are displayed in Table 1. Six of the nine stream gauges demonstrated trends. Four gauges, which were all located in the East, showed increasing trends. Two gauges, which were located in the West, showed decreasing trends. The results are consistent with broad climate predictions regarding drier conditions in the Western US and wetter conditions in the Eastern US. 
+We ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in streamflow over time. The results are displayed in Table 3. Six of the nine stream gauges demonstrated trends. Four gauges, which were all located in the East, showed increasing trends. Two gauges, which were located in the West, showed decreasing trends. The results are consistent with broad climate predictions regarding drier conditions in the Western US and wetter conditions in the Eastern US. 
 
 
 
@@ -528,7 +530,7 @@ streamflow_smk_results %>%
 
 Question 2: Are there trends in the generation data? 
 
-We also created a time series for each hydropower plant, and then decomposed each time series into its seasonal, trend, and remainder components. We plotted each decomposed time series, and observed that each site displayed strong seasonal trends in streamflow. Additionally, we ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in hydroelectric generation over time. The results are displayed in Table 2. Two plants, High Shoals and Quail Creek, display a slight statistically significant positive trend over time. Conversely, Ware Shoals and Tri County display a statistically significant negative trend over time. Tri County, which is located in Colorado, has a relatively substantial negative trend. The Tri County result is consistent with the relatively significant drought conditions experienced in Colorado over the last 20 years. The other hydropower plants have 2-sided P-values greater than 0.05, and thus we cannot reject the null hypothesis that no trend exists. Overall, the results indicate that hydropower generation demonstrates no clear trend on the national level, and each power plant is subject to unique conditions that may cause generation to trend in either direction. 
+We also created a time series for each hydropower plant, and then decomposed each time series into its seasonal, trend, and remainder components. We plotted each decomposed time series, and observed that each site displayed strong seasonal trends in streamflow. Additionally, we ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in hydroelectric generation over time. The results are displayed in Table 4. Two plants, High Shoals and Quail Creek, display a slight statistically significant positive trend over time. Conversely, Ware Shoals and Tri County display a statistically significant negative trend over time. Tri County, which is located in Colorado, has a relatively substantial negative trend. The Tri County result is consistent with the drought conditions experienced in Colorado over the last 20 years. The other hydropower plants have 2-sided P-values greater than 0.05, and thus we cannot reject the null hypothesis that no trend exists. Overall, the results indicate that hydropower generation demonstrates no clear trend on the national level, and each power plant is subject to unique conditions that may cause generation to trend in either direction. 
 
 
 ```{r smk_power, include=FALSE}
@@ -955,7 +957,7 @@ grid.arrange(arrangeGrob(combined_plot_grid, left = y.grob_power_2))
 
 
 
-Locations of the streamflow gauges and hydroelectric plants were visualized in two distinct ways. Mapview displays the location of each hydroelectric plant, with each circle size representing the capacity of the individual plant relative to the other plants. Figure 4 uses ggplot and displays the locations of both the stream gauges and hydroelectric plants used in the analysis. 
+Locations of the streamflow gauges and hydroelectric plants were visualized in two distinct ways. Mapview displays the location of each hydroelectric plant,  Figure 4 uses ggplot to display the generation site locations and their generation capacity, with each circle size representing the capacity of the individual plant relative to the other plants. Figure 5 displays the locations of both the stream gauges and hydroelectric plants used in the analysis. 
 
 
 ```{r maps, message=FALSE, warning=FALSE, include=FALSE}
