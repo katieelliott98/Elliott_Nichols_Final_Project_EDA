@@ -444,8 +444,10 @@ discharge_plot_grid<-plot_grid(title_gg, discharge_plot, ncol = 1, rel_heights =
 
 y.grob_dis<-textGrob(~"Average Monthly Discharge "(ft^3/s), 
                    gp=gpar(col="black", fontsize=10), rot=90)
+X.grob_dis<-textGrob("Date", 
+                   gp=gpar(col="black", fontsize=10))
 
-grid.arrange(arrangeGrob(discharge_plot_grid, left = y.grob_dis))
+grid.arrange(arrangeGrob(discharge_plot_grid, left = y.grob_dis, bottom= X.grob_dis))
 
 ```
 
@@ -485,8 +487,10 @@ plot_grid_power<-plot_grid(title_gg_2, power_plot, ncol = 1, rel_heights = c(0.0
 
 y.grob_power<-textGrob("Power Generation (MWh)", 
                    gp=gpar(col="black", fontsize=10), rot=90)
+X.grob_power<-textGrob("Date", 
+                   gp=gpar(col="black", fontsize=10))
 
-grid.arrange(arrangeGrob(plot_grid_power, left = y.grob_power))
+grid.arrange(arrangeGrob(plot_grid_power, left = y.grob_power, bottom= X.grob_power))
 
 
 
@@ -1020,7 +1024,10 @@ combined_plot_grid<-plot_grid(title_gg_3, combined_plot, ncol = 1, rel_heights =
 y.grob_power_2<-textGrob("Power Generation (MWh)", 
                    gp=gpar(col="black", fontsize=10), rot=90)
 
-grid.arrange(arrangeGrob(combined_plot_grid, left = y.grob_power_2))
+X.grob_power_2<-textGrob(~"Average Monthly Discharge "(ft^3/s), 
+                   gp=gpar(col="black", fontsize=10))
+
+grid.arrange(arrangeGrob(combined_plot_grid, left = y.grob_power_2, bottom= X.grob_power_2))
 
 
 
