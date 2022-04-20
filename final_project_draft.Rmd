@@ -1155,7 +1155,7 @@ CCSP, 2007: Effects of Climate Change on Energy Production and Use in the United
 
 Moustakis, Y., Papalexiou, S. M., Onof, C. J., & Paschalis, A. (2021). Seasonality, intensity, and duration of rainfall extremes change in a warmer climate. Earth's Future, 9, e2020EF001824. https://doi.org/10.1029/2020EF001824
 
-U.S. Energy Information Administration, accessed March 27, 2022. 
+U.S. Energy Information Administration. Retrieved from https://www.eia.gov/beta/electricity/data/browser/#/topic/1?freq=M&start=200101&end=202201&ctype=linechart&ltype=pin&tab=generation&pin=&maptype=0&linechart=ELEC.PLANT.GEN.56880-ALL-ALL.M&columnchart=ELEC.PLANT.GEN.56880-ALL-ALL.M Accessed March 27, 2022. 
 
 U.S. Geological Survey, 2016, National Water Information System data available on the World Wide Web (USGS Water Data for the Nation), accessed March 27, 2022.
 
