@@ -1,5 +1,6 @@
 ---
 title: "Final Project - Hydro Power Generation and Streamflow Analysis"
+subtitle: "https://github.com/katieelliott98/Elliott_Nichols_Final_Project_EDA.git"
 author: "Kaitlyn Elliott and Jon Nichols"
 date: "April 20, 2022"
 output: pdf_document
