@@ -1147,7 +1147,20 @@ The overall results of our analysis are limited by our sample size. Nine sites w
 
 ## Future recommendations 
 
-Future research could extend our analysis to account for a greater scope of variables that may explain hydropower transformations due to climate change. These variables may include temperature, glacial melt, a power plant's structural characteristics, and the frequency, timing, and amount of rainfall. Future research could include a wider selection of sites, as well as international facilities. The vulnerability of hydropower plants to climate change could also be analyzed, and forecasting could be used to better understand the future impacts of climate change on hydropower production. 
+Future research could extend our analysis to account for a greater scope of variables that may explain hydropower transformations due to climate change. These variables may include temperature, glacial melt, a power plant's structural characteristics, and the frequency, timing, and amount of rainfall. Future research could include a wider selection of sites, as well as international facilities. The vulnerability of hydropower plants to climate change could also be analyzed with use of CMIP data and then forecasting could be used to better understand the future impacts of climate change on hydropower production. 
+
+## Citations
+
+CCSP, 2007: Effects of Climate Change on Energy Production and Use in the United States. A Report by the U.S. Climate Change Science Program and the subcommittee on Global Change Research. [Thomas J.     Wilbanks, Vatsal Bhatt, Daniel E. Bilello, Stanley R. Bull, James Ekmann, William C. Horak, Y. Joe Huang, Mark D. Levine, Michael J. Sale, David K. Schmalzer, and Michael J. Scott (eds.)]. Department of Energy, Office of Biological & Environmental Research, Washington, DC., USA, 160 pp.
+
+Moustakis, Y., Papalexiou, S. M., Onof, C. J., & Paschalis, A. (2021). Seasonality, intensity, and duration of rainfall extremes change in a warmer climate. Earth's Future, 9, e2020EF001824. https://doi.org/10.1029/2020EF001824
+
+U.S. Energy Information Administration, accessed March 27, 2022. 
+
+U.S. Geological Survey, 2016, National Water Information System data available on the World Wide Web (USGS Water Data for the Nation), accessed March 27, 2022.
+
+
+
 
 
 
