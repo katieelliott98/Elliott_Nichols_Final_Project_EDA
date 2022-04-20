@@ -1,13 +1,16 @@
 ---
 title: "Final Project - Hydro Power Generation and Streamflow Analysis"
 author: "Kaitlyn Elliott and Jon Nichols"
+date: "April 20, 2022"
 output: pdf_document
 geometry: margin=2cm
 always_allow_html: true
 editor_options: 
   chunk_output_type: console
 ---
-
+\newpage 
+\tableofcontents
+\newpage
 ## Rationale and Research Questions
 
 Hydroelectric power accounts for 52 percent of renewable electricity generation and 7 percent of total electricity generation in the US. These plants are a critical clean energy resource for grid operators and utilities due to their operational flexibility, low maintenance costs, and non-intermittent production. However, hydroelectric generation is susceptible to climate change, and changes in temperature, precipitation patterns, glacial melt, and the frequency of extreme weather events such as floods and droughts may have a direct negative effect on electricity production. Thus, the impact of climate change on the variability and availability of streamflow is critical for current hydroelectric generation and future operational forecast plans. 
@@ -349,7 +352,7 @@ Quail_Creek_Generation_Complete <-  Quail_Creek_Generation[!(is.na(Quail_Creek_G
 
 ```
 
-```{r}
+```{r writing_data, message=FALSE, warning=FALSE, include=FALSE}
 
 write.csv(High_Shoals_Generation_Complete, row.names = FALSE, 
           file ="./Processed_data/High_Shoals_Generation_Complete.csv")
@@ -496,7 +499,7 @@ Question 1: Are there trends in the streamflow data?
 
 After visualizing the data, we investigated trends in streamflow. We created a time series for each stream gauge, and then decomposed each time series into its seasonal, trend, and remainder components. We plotted each decomposed time series, and observed that each site displayed strong seasonal trends in streamflow.
 
-We ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in streamflow over time. The results are displayed in Table 3. Six of the nine stream gauges demonstrated trends. Four gauges, which were all located in the East, showed increasing trends. Two gauges, which were located in the West, showed decreasing trends. The results are consistent with broad climate predictions regarding drier conditions in the Western US and wetter conditions in the Eastern US. 
+We ran a Seasonal Mann-Kendall test on each time series to test whether there was a monotonic trend in streamflow over time. The results are displayed in Table 3. Seven of the nine stream gauges demonstrated trends. Four gauges in the East, showed increasing trends, along with one in the West. Two gauges, which were both located the West, showed decreasing trends. The results are consistent with broad climate predictions regarding drier conditions in the Western US and wetter conditions in the Eastern US. 
 
 
 
@@ -808,7 +811,7 @@ generation_smk_results %>%
 
 ```
 
-Ggplot was used to graphically represent the trend and seasonal components relative to the observed generation data. Additional figures are included in the R code file associated with this report. ggplot was also used to display the relationship between average monthly discharge and monthly power generation, as seen in Figure 3. 
+
 
 ```{r trends_vis, include=FALSE}
 # Visualize how the trend maps onto the data
@@ -938,7 +941,11 @@ ggplot(Quail_Creek_Generation_Components) +
 
 ```
 
+\newpage
+
 ## Combining Datasets 
+
+Ggplot was used to graphically represent the trend and seasonal components relative to the observed generation data. Additional figures are included in the R code file associated with this report. ggplot was also used to display the relationship between average monthly discharge and monthly power generation, as seen in Figure 3. 
 
 ```{r linear_regress, echo=FALSE, fig.height=6, fig.width=8, message=FALSE, warning=FALSE}
 #Matching the stream gage data to the power generation data.
@@ -1023,7 +1030,7 @@ grid.arrange(arrangeGrob(combined_plot_grid, left = y.grob_power_2))
 
 
 
-Locations of the streamflow gauges and hydroelectric plants were visualized in two distinct ways. Mapview displays the location of each hydroelectric plant,  Figure 4 uses ggplot to display the generation site locations and their generation capacity, with each circle size representing the capacity of the individual plant relative to the other plants. Figure 5 displays the locations of both the stream gauges and hydroelectric plants used in the analysis. 
+Locations of the streamflow gauges and hydroelectric plants were visualized in two distinct ways. The maps displays the location of each hydroelectric plant,  Figure 4 uses ggplot to display the generation site locations and their generation capacity, with each circle size representing the capacity of the individual plant relative to the other plants. Figure 5 displays the locations of both the stream gauges and hydroelectric plants used in the analysis. 
 
 
 ```{r maps, message=FALSE, warning=FALSE, include=FALSE}
@@ -1067,12 +1074,12 @@ ggplot()+geom_sf(data= states, fill = "white")+geom_sf(data= locations.sf)+geom_
 
 
 
-***
+\newpage
 
 
 Question 3: Is there a linear relationship between streamflow and power generation, and if so what is the strength of that relationship?
 
-To investigate the linear relationship between streamflow and power generation, the lm function was utilized on each combined dataset. Each analysis resulted in a statistically significant linear regression equation and a statistically significant independet variable. Power generation and stresm discharge displayed a positive linear relationship in every sample analyzed, and the results are shown in Table 3. For some hydroelectric plants, such as Tri County and Matson, greater than 40% of the variation in power generation can be explained by streamflow. However, for other plants, such as High Shoals and Quail Creek, less than 20% of the variation in power generation can be explained by streamflow. The linear relationship between streamflow and generation diminishes at higher streamflow levels due to the maximum generation capacity of the hydropower plants. The analysis suggests that additional explanatory variables are needed to better capture fluctuations in hydroelectric generation. 
+To investigate the linear relationship between streamflow and power generation, the lm function was utilized on each combined dataset. Each analysis resulted in a statistically significant linear regression equation and a statistically significant independet variable. Power generation and stresm discharge displayed a positive linear relationship in every sample analyzed, and the results are shown in Table 5. For some hydroelectric plants, such as Tri County and Matson, greater than 40% of the variation in power generation can be explained by streamflow. However, for other plants, such as High Shoals and Quail Creek, less than 20% of the variation in power generation can be explained by streamflow. The linear relationship between streamflow and generation diminishes at higher streamflow levels due to the maximum generation capacity of the hydropower plants. The analysis suggests that additional explanatory variables are needed to better capture fluctuations in hydroelectric generation. 
 
 
 
@@ -1116,11 +1123,13 @@ regression_results <- data.frame(
 
 ```
 
+ 
 ```{r regression_table, echo=FALSE}
 
 regression_results %>%
   kbl(caption = "Linear Regression Results") %>%
-  kable_classic(full_width = F, html_font = "Cambria")
+  kable_classic(full_width = F, html_font = "Cambria")%>%
+  kable_styling(latex_options = "HOLD_position")
   
 
 ```
