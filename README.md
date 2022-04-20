@@ -25,9 +25,9 @@
 
 ## Database Information
 
-<Stream discharge data was sourced from the USGS. Parameter code 00060 was used and resulted in a data frame with Discharge and Dates. The discharge data ranged from January 2000 through December 2021. Data was accessed on March 27, 2022.>
+<Stream discharge data was sourced from the USGS. Parameter code 00060 was used and resulted in a data frame with Discharge and Dates. The discharge data ranged from January 2000 through December 2021. Discharge is reported in ft^3/s. Data was accessed on March 27, 2022.>
 
-<Generation data was sourced from the EIA. Variables selected included the Month and "All fuels (ALL) megawatthours". Generation data ranged from January 2001 through December 2021. Data was accessed on March 27, 2022.>
+<Generation data was sourced from the EIA. Variables selected included the Month and "All fuels (ALL) megawatthours". Generation data ranged from January 2001 through December 2021. Power is reported in units of megawhatthours. Data was accessed on March 27, 2022.>
 
 
 
@@ -38,6 +38,4 @@
 <Both file names and stored names for lists, plots, and tables indicates the hydropower plant or gage site along with the relvent test or function. For example gage_01563200_ts represented a time series for the gage site number 01563200.>
 
 
-## Metadata
 
-<For each data file in the repository, describe the data contained in each column. Include the column name, a description of the information, the class of data, and any units associated with the data. Create a list or table for each data file.> 
